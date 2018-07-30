@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Follow - {% endblock %}
+{% block content %}
+<div class="follow_bookmark_nav">
+	<span class="follow_nav black-text follow_bookmark_btn">Follow</span>
+	<span><a href="{% url 'bookmark_post' %}" class="follow_bookmark_btn">Bookmarks</a></span>
+</div>
+{% if posts %}
+	<div class="follow_article">
+		<div class="aticle_content">
+			{% for post in posts %}
+				{% include 'includes/post.html' %}
+			{% endfor %}
+		</div>
+		{% include 'includes/pagination.html' %} 
+	</div>
+{% else %}
+  <div class="container feed_card">
+    <div class="row">
+      <div class="col s12 m6 offset-m3">
+        <div class="card">
+          <div class="card-content">
+            <span class="card-title">Follow</span>
+            <div class="card_message">
+							This is where you'll see posts from people you follow.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>  
+{% endif %}
+{% endblock %}
+{% block javascript %}
+<script>
+	$('#nav_icon_menu').click(function(e) { e.preventDefault(); });
+</script>
+{% endblock %}

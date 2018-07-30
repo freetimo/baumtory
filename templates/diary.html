@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}{{ user.nickname }} - {% endblock %}
+{% block content %}
+<div class="diary_main">
+	<div class="diary_header">
+		{% if request.user == user %}
+			<div class="profile_header_image">
+				<img src="{{ request.user.profile.avatar.url }}" class="diary_avatar_image">
+			</div>
+			<div class="profile_header">
+				<div class="diary_profile_info">
+					<div class="diary_profile_nickname">{{ request.user.nickname }}</div>
+					<div>
+						<a href="#modal1" class="modal-trigger">
+			      	<input class="btn my_diary_btn white red-text text-lighten-1" type="submit" value="My diary">
+						</a>
+						<div id="modal1" class="modal" style="margin-top:12%; width: 30rem; border-radius: 5px 5px; border: none;">
+							<div class="modal-content" style="padding: 0;">
+                <a href="{% url 'new' %}">
+									<div class="my_diary_menus">New post</div>
+                </a>
+								<div class="divider"></div>
+                <a href="{% url 'edit_user' %}">
+									<div class="my_diary_menus">Profile</div>
+                </a>
+								<div class="divider"></div>
+                <a href="{% url 'logout' %}">
+									<div class="my_diary_menus">Log out</div>		
+                </a>
+								<div class="divider"></div>
+								<div class="modal-close my_diary_menus">Close</div>		
+							</div>
+						</div>
+					</div>
+				</div>
+				<div>
+					<span class="follow_count follower_count">
+					  <a class="follow_num" href="{% url 'followers' user.pk %}">followers {{ request.user.profile.follower_count }}</a>
+					</span>
+					<span class="follow_count">
+						<a class="follow_num" href="{% url 'following' user.pk %}">following {{ request.user.profile.following_count }}</a>
+					</span>
+				</div>
+				<div class="diary_profile_description">{{ request.user.profile.description }}</div>
+			</div>
+		{% else %}
+			<div class="profile_header_image">
+				<img src="{{ user.profile.avatar.url }}" class="diary_avatar_image">
+			</div>
+			<div class="profile_header">
+				<div class="diary_profile_info"> 
+					<span class="diary_profile_nickname">{{ user.nickname }}</span>
+					{% if request.user.is_authenticated %}
+  					{% if request.user.pk in user.profile.get_pk_follower %}
+			      <span>
+				      <input class="btn follow following_btn" type="submit" value="Following {{ user.profile.follower_count }}" name="{{ user.profile.id }}">
+			      </span>
+			      {% else %}
+						<span>
+				      <input class="btn follow follow_btn" type="submit" value="Follow {{ user.profile.follower_count }}" name="{{ user.profile.id }}">
+			      </span>
+			      {% endif %}
+			    {% else %}
+						<span>
+				      <input class="btn follow_btn" type="submit" value="Follow {{ user.profile.follower_count }}" onclick="M.toast({html:'Please login', classes:'toast_btn', displayLength:2500} )">
+			      </span>
+			    {% endif %}
+				</div>
+				<div class="diary_profile_description">{{ user.profile.description }}</div>
+			</div>
+    {% endif %}
+	</div> 
+	<div class="diary_profile_description_mobile">{{ user.profile.description }}</div>
+	<div class="divider divider_mobile"></div>
+	{% if posts %}
+		<div class="aticle_content">
+		{% for post in posts %}
+			{% if post.published is True %}
+				{% include 'includes/post_time.html' %}
+			{% else %}
+				{% if post.user == request.user %}
+					<div>
+						<div>
+							<a href="{% url 'detail' post.pk  post.slug %}"><img src="{{ post.thumbnail.url }}" class="thumbnail_image"></a>
+						</div>
+						<div>
+							<a href="{% url 'detail' post.pk  post.slug %}" class="black-text">
+								<div class="article_title">
+								{{ post.title|truncatechars:40 }} <span class="message_not_published">is not submitted yet.</span>
+								</div>
+							</a>
+						</div>
+						<div>
+							<a href="{% url 'diary' post.user.pk %}" class="grey-text lighten-1">
+								<div class="article_nickname">
+								{{ post.published_at|naturalday  }}
+								</div>
+							</a>
+						</div>
+					</div>
+				{% endif %}
+			{% endif %}
+		{% endfor %}
+		</div>
+		{% if posts.has_other_pages  %}
+		  <ul class="pagination">
+		    {% if posts.number > 1 %}
+		      <li class="waves-effect">
+		        <a href="?page=1">
+		          <i class="material-icons page_icon">&#xe5dc</i>
+		        </a>
+		      </li>
+		    {% else %}
+		      <li class="disabled">
+		        <i class="material-icons page_icon">&#xe5dc</i>
+		      </li>
+		    {% endif %}
+		    {% for i in posts.paginator.page_range %}
+		      {% if posts.number == i %}
+		        <li class="active red lighten-1">
+		          <a href="#!" style="pointer-events: none; cursor: default;">{{ i }}</a>
+		        </li>
+		      {% elif i > posts.number|add:'-3' and i < posts.number|add:'3' %}
+		        <li class="waves-effect">
+		          <a href="?page={{ i }}">{{ i }}</a>
+		        </li>
+		      {% endif %}
+		    {% endfor %}
+		    {% if posts.number != posts.paginator.num_pages %}
+		      <li class="waves-effect">
+		        <a class="page-link" href="?page={{ posts.paginator.num_pages }}">
+		          <i class="material-icons page_icon">&#xe5dd</i>
+		        </a>
+		      </li>
+		    {% else %}
+		      <li class="disabled">
+		        <i class="material-icons page_icon">&#xe5dd</i>
+		      </li>
+		    {% endif %}
+		  </ul>
+		{% endif %}
+	{% else %}
+		{% if request.user == user %}
+		<div class="diary_message">
+			<div>Happiness isn't something you experience. <br> It's something you remember.</div>
+		</div>
+		{% else %}
+		<div class="diary_message">
+		No Posts
+		</div>
+		{% endif %}
+	{% endif %}
+</div>
+{% endblock %}
+{% block javascript %}
+<script>
+	var user_diary = {% if request.user == user %}true{% else %}false{% endif %};
+	if (user_diary) {
+		$('#nav_icon_user').click(function(e) { e.preventDefault(); });
+	} 
+	$(document).ready(function(){
+		$('.modal').modal();
+	});
+</script>
+{% include 'includes/script_ajax_follow.html' %} 
+{% endblock %}
+
+

@@ -1,0 +1,265 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% load humanize %}
+{% load static %}
+{% block title %}{{ post.title }} - {% endblock %}
+{% block meta %}{{ post.description }}{% endblock %}
+{% block content %}
+<div class="detail_main">
+	<div>
+		<h1 class="detail_title">{{ post.title }}</h1>
+		<div class="detail_header_profile">
+			<div class="detail_header_profile_info">
+				<div>
+					<a href="{% url 'diary' post.user.pk %}" class="detail_header_profile_avatar_image" style="margin:0;">
+						<img src="{{ post.user.profile.avatar.url }}" class="detail_header_profile_avatar_image">
+					</a>
+				</div>
+				<div>
+					<a href="{% url 'diary' post.user.pk %}">
+						<div class="detail_header_profile_nickname">{{ post.user.nickname }}</div>
+					</a>
+					<div class="detail_header_profile_created_at">{{ post.published_at|naturaltime }}</div>
+				</div>
+			</div>
+			<div>
+				{% if post.user == user %}
+					<span>
+					  <a href="{% url 'edit_post' post.pk post.slug %}" class="post_edit">Edit</a>
+					</span>
+					<span>
+						<a href="{% url 'delete' post.pk post.slug %}" class="post_delete">delete</a>
+					</span>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+	<div class="divider"></div>
+	<article class="detail_content" id="detail_content" style="margin-left: 0; margin-right: 0;">
+		<div id="editor_container" class="editor_container" style="height: 90%;"></div>
+	</article>
+	<div class="detail_thumb">   
+		<div class="detail_thumb_part">
+			{% if request.user.is_authenticated %}
+				{% if request.user in post.likes.all %}
+					<i id="like" class="material-icons detail_thumbup_icon_plus" name="{{ post.id }}">&#xe8dc</i>
+				{% else %}
+					<i id="like" class="material-icons detail_thumbup_icon" name="{{ post.id }}">&#xe8dc</i>
+				{% endif %}
+	    {% else %}
+				<i class="material-icons no_user_btn detail_thumbup_icon" onclick="M.toast({html:'Please login', classes:'toast_btn', displayLength:2500} )">&#xe8dc</i>
+	    {% endif %}
+			<span id="like_count_{{ post.id }}" class="detail_thumb_count">{{ post.total_likes|intword }}</span>
+		</div>       
+		<div class="detail_thumb_part">
+			{% if request.user.is_authenticated %}
+				{% if request.user in post.dislikes.all %}
+					<i id="dislike" class="material-icons detail_thumbdown_icon_plus" name="{{ post.id }}">&#xe8db</i>
+				{% else %}
+					<i id="dislike" class="material-icons detail_thumbdown_icon" name="{{ post.id }}">&#xe8db</i>
+				{% endif %}
+	    {% else %}
+				<i class="material-icons no_user_btn detail_thumbdown_icon" onclick="M.toast({html:'Please login', classes:'toast_btn', displayLength:2500} )">&#xe8db</i>
+	    {% endif %}
+			<span id="dislike_count_{{ post.id }}" class="detail_thumb_count">{{ post.total_dislikes|intword }}</span>
+		</div>   
+		<div class="detail_thumb_part">
+			{% if request.user.is_authenticated %}
+			<button id="bookmark" class="bookmark_button white" name="{{ post.id }}" >
+				<i class="material-icons bookmark_button_icon">&#xe865</i>
+				<span class="bookmark_button">Bookmark</span>
+			</button>
+	    {% else %}
+			<button class="bookmark_button white" onclick="M.toast({html:'Please login', classes:'toast_btn', displayLength:2500} )">
+				<i class="material-icons bookmark_button_icon">&#xe865</i>
+				<span class="bookmark_button">Bookmark</span>
+			</button>
+	    {% endif %}
+		</div>            
+	</div>
+</div>
+<div class="divider detail_footer_divider"></div>
+<div class="mobile_detail_footer_info"></div>
+<div class="detail_footer">
+	<div class="detail_footer_comment_section">
+		<div class="desktop_detail_footer_info"></div>
+		<div class="detail_footer_info">
+			<div class="detail_footer_profile">
+				<div class="detail_footer_profile_info">
+					<a href="{% url 'diary' post.user.pk %}" class="detail_footer_profile_avatar_image">
+						<img src="{{ post.user.profile.avatar.url }}" class="detail_footer_profile_avatar_image">
+					</a>
+					<div>
+						<a href="{% url 'diary' post.user.pk %}">
+							<span class="detail_footer_profile_nickname">{{ post.user.nickname }}</span>
+						</a>			
+						{% if post.choice != 'no choice' %}
+						<div class="detail_footer_choice">{{ post.choice }}</div>		
+						{% endif %}
+				</div>
+				</div>
+				{% if request.user.is_authenticated %}
+					{% if request.user != post.user %}
+						{% if request.user.pk in post.user.profile.get_pk_follower %}
+							<input class="btn follow following_btn" type="submit" value="Following {{ post.user.profile.follower_count }}" name="{{ post.user.profile.id }}">
+						{% else %}
+							<input class="btn follow follow_btn" type="submit" value="Follow {{ post.user.profile.follower_count }}" name="{{ post.user.profile.id }}">
+						{% endif %}
+					{% endif %}
+		    {% else %}
+				<input class="btn follow_btn" type="submit" value="Follow {{ post.user.profile.follower_count }}" onclick="M.toast({html:'Please login', classes:'toast_btn', displayLength:2500} )">
+		    {% endif %}
+			</div>
+			<div class="detail_footer_description">
+				{{ post.description }}
+			</div>
+			<div class="divider detail_comment_divider"></div>
+		</div>
+		<div class="detail_comment">
+			<span class="comment_text">Comment</span>
+      <form method="post" autocomplete="off" novalidate>
+    	{% csrf_token %}
+				<div class="detail_comment_reaction_form input-field" id="add_comment_post{{post.id}}">
+				{% if request.user.is_authenticated %}
+	      	{% render_field commentform.comment type="text" id="comment_form1"%}
+	      	<button class="btn red lighten-1 right add_comment" type="submit" name="{{ post.id }}">save</button>
+		    {% else %}
+	      	{% render_field commentform.comment type="text" class="add_comment_btn" id="comment_form2"%} 
+		      <input type="button" class="btn right red lighten-1 add_comment_btn" name="{{ post.id }}" value="save" onclick="M.toast({html:'Please login', classes:'toast_btn', displayLength:2500} )">
+		    {% endif %}
+				</div>
+      </form>
+    	<div id="comment_list_ajax_post{{post.id}}"></div>
+		  <div class="infinite-container">
+		    {% for comment in comments %}
+		    <div class="infinite-item">
+					<div class="detail_comment_reaction_section" id="comment{{ comment.id }}">
+						<a href="{% url 'diary' comment.user.pk %}" class="detail_comment_profile_avatar_image">
+							<img src="{{ comment.user.profile.avatar.url }}" class="detail_comment_profile_avatar_image">
+						</a>
+						<div class="detail_comment_reaction">
+							<div class="detail_comment_reaction_info">
+								<div>
+									<a href="{% url 'diary' comment.user.pk %}" class="black-text detail_comment_reaction_nickname">
+									{{ comment.user.nickname }}
+									</a>
+									<span class="detail_comment_reaction_created_at">{{ comment.created_at|naturaltime }}</span>
+								</div>
+							  {% if user == comment.user %}
+							  <div>
+									<i class="material-icons del_comment" name="{{ comment.id }}">&#xe14c</i>
+							  </div>
+							  {% endif %}
+							</div>
+							<div class="detail_comment_reaction_content">
+								{{ comment.comment }}
+							</div>
+							<div class="comment_thumb">
+								<span class="comment_thumb_part">
+								{% if request.user.is_authenticated %}
+									{% if request.user in comment.likes.all %}
+										<i class="comment_like material-icons comment_thumbup_icon_plus" id="comment_like{{ comment.id }}" name="{{ comment.id }}" value="{% if request.user in comment.likes.all %}true{% else %}false{% endif %}">&#xe8dc</i>
+									{% else %}
+										<i class="comment_like material-icons comment_thumbup_icon" id="comment_like{{ comment.id }}" name="{{ comment.id }}" value="{% if request.user in comment.likes.all %}true{% else %}false{% endif %}">&#xe8dc</i>
+									{% endif %}
+						    {% else %}
+									<i class="material-icons comment_thumbup_icon" onclick="M.toast({html:'Please login', classes:'toast_btn', displayLength:2500} )">&#xe8dc</i>
+						    {% endif %}
+									<span id="comment_like_count_{{ comment.id }}" class="comment_thumb_count">{{ comment.total_likes|intword }}</span>
+								</span>       
+								<span class="comment_thumb_part">
+								{% if request.user.is_authenticated %}
+									{% if request.user in comment.dislikes.all %}
+										<i class="comment_dislike material-icons comment_thumbdown_icon_plus" id="comment_dislike{{ comment.id }}" name="{{ comment.id }}" value="{% if request.user in comment.dislikes.all %}true{% else %}false{% endif %}">&#xe8db</i>
+									{% else %}
+										<i class="comment_dislike material-icons comment_thumbdown_icon" id="comment_dislike{{ comment.id }}" name="{{ comment.id }}" value="{% if request.user in comment.dislikes.all %}true{% else %}false{% endif %}">&#xe8db</i>
+									{% endif %}
+						    {% else %}
+									<i class="material-icons comment_thumbdown_icon" onclick="M.toast({html:'Please login', classes:'toast_btn', displayLength:2500} )">&#xe8db</i>
+						    {% endif %}
+									<span id="comment_dislike_count_{{ comment.id }}" class="comment_thumb_count">{{ comment.total_dislikes|intword }}</span>
+								</span>   
+								<span class="reply_comment_toggle_btn" data-target="{{ comment.id }}">Reply</span>
+							</div>
+							<div class="reply_comment" style="display: none;" id="reply_comment{{ comment.id }}">
+					      <form method="post" autocomplete="off" novalidate>
+					    		{% csrf_token %}
+					    		<input type="hidden" class="post_id" name="{{ post.id }}">
+									<div class="detail_comment_reaction_form" id="reply_comment_post{{comment.id}}">
+									{% if request.user.is_authenticated %}
+						      	{% render_field commentform.comment type="text" id="comment_form3" %}
+						      	<button class="btn red lighten-1 right reply_to_comment" type="submit" name="{{ comment.id }}">save</button>
+							    {% else %}
+						      	{% render_field commentform.comment type="text" class="add_comment_btn" id="comment_form4"%} 
+	    						  <input type="button" class="btn right red lighten-1 add_comment_btn" value="save" onclick="M.toast({html:'Please login', classes:'toast_btn', displayLength:2500} )">
+							    {% endif %}
+									</div>
+					      </form>	
+							</div>
+							<div class="hidden_comment_contents">
+								{% if comment.pk in replies %}
+								<div class="load_comment_btn black-text" id="load_comment_btn{{ comment.id }}" name="{{ comment.id }}">Load more comments</div>
+								{% endif %}
+								<div id="reply_comment_load{{comment.id}}"></div>
+								<div id="reply_comment_list_ajax_post{{comment.id}}"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+		    {% endfor %}
+		  </div>			
+		  {% if comments.has_next %}
+	    <a class="infinite-more-link" href="?page={{ comments.next_page_number }}"></a>
+		  {% endif %}
+  		{% include 'includes/loading.html' %}
+		</div>
+	</div>
+	<div class="detail_footer_other_post_section">
+		<div class="detail_other_article">
+			<div class="detail_other_article_content">
+				{% for post in gt_posts.reverse|slice:":5" %}
+					{% include 'includes/post_time.html' %}
+				{% endfor %}
+				{% for post in lt_posts|slice:":5" %}
+					{% include 'includes/post_time.html' %}
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+	var options = {readOnly: true,}
+  var editor = new Quill('#editor_container', options);
+  editor.setContents(JSON.parse("{{ post.content |escapejs}}"));
+  editor.enable(false);
+
+	$(document).ready(function(){
+		$('.reply_comment_toggle_btn').off('click').on('click',function() {
+      $(this).parents('.detail_comment_reaction').find('#reply_comment' + $(this).data('target')).fadeToggle(100);
+		});
+	});
+
+	$('.add_comment_btn').keydown(function() {
+    if (event.keyCode === 13) {
+      event.preventDefault();
+      M.toast({html:'Please login', classes:'toast_btn', displayLength:2500})
+      return
+    }
+	});
+
+	$(document).ready(function() {  
+		if ($(window).width() < 600) {
+		  $('.detail_footer_info').prependTo('.mobile_detail_footer_info');
+		} else {
+			$('.detail_footer_info').prependTo('.desktop_detail_footer_info');
+		}
+	});
+
+</script>
+{% include 'includes/infinite.html' %}    
+{% include 'includes/script_ajax_follow.html' %} 
+{% include 'includes/script_ajax.html' %}    
+{% endblock %}

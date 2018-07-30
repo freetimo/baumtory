@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block title %}Post - {% endblock %}
+{% block content %}
+<div class="post_main">
+	<form method="post" onsubmit="return getContent()" enctype="multipart/form-data" autocomplete="off" novalidate>
+		{% csrf_token %}
+			<div class="post_title_form">
+				{% render_field form.title placeholder="Title"%}
+	      {% for error in form.title.errors %}
+	      	<span class="helper-text red-text">{{ error }}</span>
+	      {% endfor %}
+	    </div>
+			<div class="post_select">
+				{% render_field form.choice %}
+			</div>
+		  <div class="file-field input-field post_thumbnail_form">
+		  	<div class='btn red lighten-1'>
+		  		<span>Thumbnail</span>
+	      	{% render_field form.thumbnail type="file"%}
+				</div>
+	      <div class="file-path-wrapper">
+	      	{% render_field form.thumbnail class="file-path validate" type="text" placeholder="Upload thumbnail image" %}
+	      </div>
+		    {% for error in form.thumbnail.errors %}		
+		      <span class="helper-text red-text">{{ error }}</span>
+		    {% endfor %}
+		  </div>
+			<div class="post_content_form">
+				<input type="hidden" name="content">
+				<div id="editor_container" class="editor_container" style="height: 90%;"></div>
+			</div>
+			<div class="post_description_form">
+				{% render_field form.description placeholder="Describe this post" %}
+		    {% for error in form.description.errors %}		
+		      <span class="helper-text red-text">{{ error }}</span>
+		    {% endfor %}
+			</div>
+		<input class="btn save_submit red lighten-1" type="submit" name="action" value="save">
+		<input class="btn save_submit red lighten-1" type="submit" name="action" value="submit">
+	</form>
+</div>
+{% endblock %}
+{% block javascript %}
+{% include 'includes/quilljs.html' %} 
+<script>
+  
+  $(document).ready(function(){
+    $('select').formSelect();
+  });
+</script>
+{% endblock %}

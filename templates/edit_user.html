@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block title %}Settings - {% endblock %}
+{% block content %}
+<div class="valign-wrapper">
+  <div class="valign">
+    <div class="container">
+      <div class="row">
+        <div class="col s12 m6 offset-m3">
+					<div class="card ">
+					  <div class="card-content">
+					    <span class="card-title">Profile</span>
+								<form method="post"  enctype="multipart/form-data" autocomplete="off" novalidate> 
+									{% csrf_token %}
+									{% if profile_avatar_form.non_field_errors %}
+									  <div class="red-text" role="alert">
+									    {% for error in profile_avatar_form.non_field_errors %}
+									      <p>{{ error }}</p>
+									    {% endfor %}
+									  </div>
+									{% endif %}
+								  <div class="file-field input-field">
+								  	<div class='btn avatar_btn white'>
+											<img src="{{ user.profile.avatar.url }}" class="avatar_image">
+												{{ profile_avatar_form.avatar }}
+										</div>
+							      <div class="file-path-wrapper">
+							      	{% render_field profile_avatar_form.avatar class="file-path validate" type="text" placeholder="Profile image" %}
+							      </div>
+								    {% for error in profile_avatar_form.avatar.errors %}		
+								      <span class="helper-text red-text">{{ error }}</span>
+								    {% endfor %}
+								  </div>
+									{% if user_form.non_field_errors %}
+									  <div class="red-text" role="alert">
+									    {% for error in user_form.non_field_errors %}
+									      <p>{{ error }}</p>
+									    {% endfor %}
+									  </div>
+									{% endif %}
+								  <div class="input-field">
+								    {% render_field user_form.nickname class="validate" placeholder="nickname" %}
+								    {% for error in user_form.nickname.errors %}		
+								      <span class="helper-text red-text">{{ error }}</span>		
+								    {% endfor %}
+								  </div>
+									{% if profile_description_form.non_field_errors %}
+									  <div class="red-text" role="alert">
+									    {% for error in profile_description_form.non_field_errors %}
+									      <p>{{ error }}</p>
+									    {% endfor %}
+									  </div>
+									{% endif %}
+								  <div class="input-field">
+								    {% render_field profile_description_form.description class="validate"  placeholder="About me"%}
+								  </div>
+									{% if messages %}
+									  <ul class="messages">
+									    {% for message in messages %}
+									      <li class="{{ message.tags }} blue-text" style="font-size: 1.5rem;">{{ message }}</li>
+									    {% endfor %}
+									  </ul>
+									{% endif %}
+									<button class="btn red lighten-1 right" type="submit" name="action">save</button>
+								</form>
+								<a href="{% url 'password_change' %}" class="grey-text link_accounts">Change password</a>
+					  </div>
+					</div>
+        </div>
+      </div>
+    </div>  
+  </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block body %}
+<div class="valign-wrapper accounts_form">
+  <div class="valign">
+    <div class="container">
+      <div class="row">
+        <div class="col s12 m6 offset-m3">
+          <div class="card">
+            <div class="card-content">
+              <span class="card-title">Signup</span>
+              <form method="post" autocomplete="off" novalidate>
+                {% csrf_token %}
+                {% include 'includes/form.html' %}		
+                <button class="btn red lighten-1 right" type="submit"  name="action">next</button>
+              </form>
+              <br>
+              <br>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>  
+</div>
+{% endblock %}

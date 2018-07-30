@@ -1,0 +1,17 @@
+{% load widget_tweaks %}
+{% if form.non_field_errors %}
+  <div class="red-text" role="alert">
+    {% for error in form.non_field_errors %}
+      <p style="font-size: 1.5rem;">{{ error }}</p>
+    {% endfor %}
+  </div>
+{% endif %}
+{% for field in form.visible_fields %}
+  <div class="input-field">
+    <label for="{{ field.label }}" class="form_label" style="font-size: 1.3rem;">{{ field.label }}</label>
+    {% render_field field class="validate" %}
+    {% for error in field.errors %}		
+      <span class="helper-text red-text" style="font-size: 1.5rem;">{{ error }}</span>		
+    {% endfor %}
+  </div>
+{% endfor %}

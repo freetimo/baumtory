@@ -1,0 +1,250 @@
+<script>
+	// like button
+	var user_like_choice = {% if request.user in post.likes.all %}true{% else %}false{% endif %};
+	$('#like').click(function(){
+	  var pk = $(this).attr('name')
+	  $.ajax({
+	    type: "POST",
+	    url: "{% url 'post_like' %}",
+	    data: {'pk': pk, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+	    dataType: "json",
+	    success: function(response){
+	      $("#like_count_"+pk).html(response.likes_count);
+	      if (user_like_choice === false) {
+	      	$('.detail_thumbup_icon').toggleClass('detail_thumbup_icon detail_thumbup_icon_plus');
+	      	 user_like_choice = !user_like_choice
+	      }else{
+	      	$('.detail_thumbup_icon_plus').toggleClass('detail_thumbup_icon_plus detail_thumbup_icon');
+	      	 user_like_choice = !user_like_choice
+	      }
+	    },	
+	   	error: function(request, status, error){
+  	  	M.toast({html: 'Error', classes:'toast_btn', displayLength:2500})
+	    },
+	  });
+	})	
+	// dislike button
+	var user_dislike_choice = {% if request.user in post.dislikes.all %}true{% else %}false{% endif %};
+	$('#dislike').click(function(){
+	  var pk = $(this).attr('name') 
+	  $.ajax({
+	    type: "POST",
+	    url: "{% url 'post_dislike' %}",
+	    data: {'pk': pk, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+	    dataType: "json",
+	    success: function(response){ 
+        $("#dislike_count_"+pk).html(response.dislikes_count);
+	      if (user_dislike_choice === false) {
+	      	$('.detail_thumbdown_icon').toggleClass('detail_thumbdown_icon detail_thumbdown_icon_plus');
+	      	 user_dislike_choice = !user_dislike_choice
+	      }else{
+	      	$('.detail_thumbdown_icon_plus').toggleClass('detail_thumbdown_icon_plus detail_thumbdown_icon');
+	      	 user_dislike_choice = !user_dislike_choice
+	      }
+	    },	
+	   	error: function(request, status, error){
+  	  	M.toast({html: 'Error', classes:'toast_btn', displayLength:2500})
+	    },
+	  });
+	})	
+  // bookmark
+  $('#bookmark').click(function(){
+    var pk = $(this).attr('name') 
+    $.ajax({
+      type: "POST",
+      url: "{% url 'bookmark'%}",
+      data: {
+        'pk': pk, 
+        'csrfmiddlewaretoken': '{{ csrf_token }}'
+      },
+      dataType: "json",
+      success: function(response){
+        M.toast({html: response.message, classes:'toast_btn', displayLength:2500})
+      },  
+      error: function(request, status, error){
+        M.toast({html: 'Error', classes:'toast_btn', displayLength:2500})
+      },
+    });
+  })  
+  // comment_like button
+  $('.comment_like').click(function(){
+    var pk = $(this).attr('name')
+    var comment_like_choice = $(this).attr('value')
+    $.ajax({
+      type: "POST",
+      url: "{% url 'comment_like' %}",
+      data: {'pk': pk, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+      dataType: "json",
+      success: function(response){ 
+        $("#comment_like_count_"+pk).html(response.likes_count);
+        if (comment_like_choice == 'false') {
+          $('#comment_like'+pk).toggleClass('comment_thumbup_icon comment_thumbup_icon_plus');
+          $('#comment_like'+pk).attr('value', 'true');
+        }else{
+          $('#comment_like'+pk).toggleClass('comment_thumbup_icon_plus comment_thumbup_icon');
+          $('#comment_like'+pk).attr('value', 'false');
+        }
+      },  
+      error: function(request, status, error){
+        M.toast({html: 'Error', classes:'toast_btn', displayLength:2500})
+      },
+    });
+  })  
+  // comment_dislike button
+  $('.comment_dislike').click(function(){
+    var pk = $(this).attr('name') 
+    var comment_dislike_choice = $(this).attr('value')
+    $.ajax({
+      type: "POST",
+      url: "{% url 'comment_dislike' %}",
+      data: {'pk': pk, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+      dataType: "json",
+      success: function(response){ 
+        $("#comment_dislike_count_"+pk).html(response.dislikes_count);
+        if (comment_dislike_choice == 'false') {
+          $('#comment_dislike'+pk).toggleClass('comment_thumbdown_icon comment_thumbdown_icon_plus');
+          $('#comment_dislike'+pk).attr('value', 'true');
+        }else{
+          $('#comment_dislike'+pk).toggleClass('comment_thumbdown_icon_plus comment_thumbdown_icon');
+          $('#comment_dislike'+pk).attr('value', 'false');
+        }
+      },  
+      error: function(request, status, error){
+        M.toast({html: 'Error', classes:'toast_btn', displayLength:2500})
+      },
+    });
+  })  
+	// save comment
+	$(document).on('click', '.add_comment', function(e){
+		e.preventDefault();
+    var pk = $(this).attr('name');
+    var comment = $("#add_comment_post"+pk+">input[type=text]").val();
+    comment = $.trim(comment);
+    if ( comment == "") {
+    	return false
+    }
+    $.ajax({
+      type: "POST",
+      url: "{% url 'comment_new' %}",
+      data: {
+        'pk': pk,
+        'comment':comment,
+        'csrfmiddlewaretoken': '{{ csrf_token }}',
+      },
+      dataType: "html",
+      success: function(data, textStatus, jqXHR){
+        $("#add_comment_post"+pk+">input[type=text]").val("");
+        $("#comment_list_ajax_post"+pk).prepend(data);
+      },
+      error: function(request, status, error){
+        alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+      },
+    });
+  });
+	// reply to comment
+	$(document).on('click', '.reply_to_comment', function(e){
+		e.preventDefault();
+    var comment_id = $(this).attr('name')
+    var pk = $('.post_id').attr('name')
+    var comment = $("#reply_comment_post"+comment_id+">input[type=text]").val();
+    comment = $.trim(comment);
+    if ( comment == "") {
+    	return false
+    }
+    $.ajax({
+      type: "POST",
+      url: "{% url 'comment_new' %}",
+      data: {
+        'pk': pk,
+        'comment_id': comment_id,
+        'comment':comment,
+        'csrfmiddlewaretoken': '{{ csrf_token }}',
+      },
+      dataType: "html",
+      success: function(data, textStatus, jqXHR){
+        $("#reply_comment_post"+comment_id+">input[type=text]").val("");
+        $("#reply_comment_list_ajax_post"+comment_id).append(data);
+      },
+      error: function(request, status, error){
+        alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+      },
+    });
+  });
+	// reply to reply
+	$(document).on('click', '.reply_to_reply', function(e){
+		e.preventDefault();
+    var reply_id = $(this).attr('name')
+		var comment_id = $(this).attr('value')
+    var pk = $('.post_id').attr('name')
+    var comment = $("#reply_comment_post"+reply_id+">input[type=text]").val();
+    comment = $.trim(comment);
+    if ( comment == "") {
+    	return false
+    }
+    $.ajax({
+      type: "POST",
+      url: "{% url 'comment_new' %}",
+      data: {
+        'pk': pk,
+        'comment_id': comment_id,
+        'comment':comment,
+        'csrfmiddlewaretoken': '{{ csrf_token }}',
+      },
+      dataType: "html",
+      success: function(data, textStatus, jqXHR){
+        $("#reply_comment_post"+reply_id+">input[type=text]").val("");
+        $("#reply_comment_list_ajax_post"+comment_id).append(data);
+      },
+      error: function(request, status, error){
+        alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+      },
+    });
+  });
+  // reply load
+  $(document).on('click', '.load_comment_btn', function(){
+    var pk = $(this).attr('name');
+    $.ajax({
+      type: "POST",
+      url: "{% url 'reply_load' %}",
+      data: {
+        'pk': pk,
+        'csrfmiddlewaretoken': '{{ csrf_token }}',
+      },
+      dataType: "html",
+      success: function(data, textStatus, jqXHR){
+        $("#reply_comment_load"+pk).append(data);
+        $("#load_comment_btn"+pk).removeClass('load_comment_btn').addClass('hide_comment_btn')
+      },
+      error: function(request, status, error){
+        alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+      },
+    });
+  });
+  // hide_show reply
+  $(document).on('click', '.hide_comment_btn', function(){
+    var pk = $(this).attr('name');
+    $("#reply_comment_load"+pk).toggle();
+  });
+	// delete comment
+  $(document).on('click', '.del_comment', function(){
+    var pk = $(this).attr('name');
+    $.ajax({
+      type: "POST",
+      url: "{% url 'comment_delete' %}",
+      data: {
+        'pk': pk,
+        'csrfmiddlewaretoken': '{{ csrf_token }}',
+      },
+      dataType: "json",
+      success: function(response){
+        if(response.status){
+          $('#comment'+pk).remove();
+        }
+        M.toast({html: response.message, classes:'toast_btn', displayLength:2500})
+      },
+      error: function(request, status, error){
+        alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+      },
+    });
+  });
+</script>

@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block content %}
+<div class="search_main">
+	{% if posts %}
+	<div class="search_content">
+		{% for post in posts %}
+			<div class="search_thumbnail">
+				<div class="search_left_thumbnail">
+					<a href="{% url 'detail' post.pk post.slug %}">
+						<img src="{{ post.thumbnail.url }}" class="search_thumbnail_image">
+					</a>
+				</div>
+				<div class="search_right_thumbnail">
+					<div class="search_title">
+						<a href="{% url 'detail' post.pk post.slug %}" class=" black-text">{{ post.title }}</a>
+					</div>
+					<div class="search_profile">
+						<div>
+							<a href="{% url 'diary' post.user.pk %}"  class="search_user_avatar_image">
+								<img src="{{ post.user.profile.avatar.url }}" class="search_user_avatar_image">
+							</a>
+						</div>
+						<div>
+							<a href="{% url 'diary' post.user.pk %}" class="search_user_nickname ">{{ post.user.nickname|truncatechars:14 }} &#8901; {{ post.published_at|naturalday }}</a>
+						</div>
+					</div>
+					<div class="search_description">{{ post.description|truncatechars:100 }}</div>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+	{% else %}
+	<div class="search_no_content">
+		<p><b>Nothing Found</b></p>
+		<p>Sorry, no results were found. Please try another search.</p> 
+	</div>
+	{% endif %}
+
+	{% if is_paginated %}
+	  <ul class="pagination">
+	    {% if page_obj.number > 1 %}
+	      <li class="waves-effect">
+	        <a href="?search={{ request.GET.search }}&page=1">
+	          <i class="material-icons page_icon">&#xe5dc</i>
+	        </a>
+	      </li>
+	    {% else %}
+	      <li class="disabled">
+	        <i class="material-icons page_icon">&#xe5dc</i>
+	      </li>
+	    {% endif %}
+	    {% for i in paginator.page_range %}
+	      {% if page_obj.number == i %}
+	        <li class="active red lighten-1">
+	          <a href="#!" style="pointer-events: none; cursor: default;">{{ i }}</a>
+	        </li>
+	      {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %}
+	        <li class="waves-effect">
+	          <a href="?search={{ request.GET.search }}&page={{ i }}">{{ i }}</a>
+	        </li>
+	      {% endif %}
+	    {% endfor %}
+	    {% if page_obj.number != paginator.num_pages %}
+	      <li class="waves-effect">
+	        <a class="page-link" href="?search={{ request.GET.search }}&page={{ paginator.num_pages }}">
+	          <i class="material-icons page_icon">&#xe5dd</i>
+	        </a>
+	      </li>
+	    {% else %}
+	      <li class="disabled">
+	        <i class="material-icons page_icon">&#xe5dd</i>
+	      </li>
+	    {% endif %}
+	  </ul>
+	{% endif %}
+
+
+</div>
+{% endblock %}

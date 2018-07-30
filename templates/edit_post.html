@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block title %}Edit post - {% endblock %}
+{% block content %}
+<div class="post_main">
+	<form class="edit_form" onsubmit="return getContent()" method="post" enctype="multipart/form-data" autocomplete="off" novalidate>
+		{% csrf_token %}
+			<div class="post_title_form">
+				{% render_field post_edit_form.title placeholder="Title" %}
+	      {% for error in post_edit_form.title.errors %}
+	      	<span class="helper-text red-text">{{ error }}</span>
+	      {% endfor %}
+	    </div>
+			<div class="post_select">
+				{% render_field post_edit_form.choice %}
+			</div>
+		  <div class="file-field input-field post_thumbnail_form">
+		  	<div class='btn red lighten-1'>
+		  		<span>Thumbnail</span>
+	      	{% render_field post_thumbnail_form.thumbnail type="file" %}
+				</div>
+	      <div class="file-path-wrapper">
+	      	{% render_field post_thumbnail_form.thumbnail class="file-path validate" type="text" placeholder="You can change thumbnail image."%}
+	      </div>
+		    {% for error in post_thumbnail_form.thumbnail.errors %}		
+		      <span class="helper-text red-text">{{ error }}</span>
+		    {% endfor %}
+		  </div>
+			<div class="post_content_form">
+				<input type="hidden" name="content">
+				<div id="editor_container" class="editor_container" style="height: 90%;"></div>
+			</div>
+			<div class="post_description_form">
+				{% render_field post_edit_form.description placeholder="Describe this post" %}
+		    {% for error in post_edit_form.description.errors %}		
+		      <span class="helper-text red-text">{{ error }}</span>
+		    {% endfor %}
+			</div>
+		<input class="btn save_submit save red lighten-1" type="submit" name="action" value="save">
+		<input class="btn save_submit red lighten-1" type="submit" name="submit" value="submit">
+	</form>
+</div>
+{% endblock %}
+{% block javascript %}
+{% include 'includes/quilljs.html' %} 
+<script>
+  $(document).ready(function(){
+    $('select').formSelect();
+  });
+  editor.setContents(JSON.parse("{{ post.content |escapejs}}"));
+	$(document).on('click', '.save', function(e){
+		e.preventDefault();
+	  var save = $(this).attr('value')
+    var content = document.querySelector('input[name="content"]');
+    content.value = JSON.stringify(editor.getContents());
+	  var edit_form = document.querySelector('.edit_form');
+ 		var formdata = $(edit_form).serializeArray();
+ 		title=formdata[1]['value']
+ 		choice=formdata[2]['value']
+ 		thumbnail=formdata[3]['value']
+ 		content=formdata[4]['value']
+ 		description=formdata[5]['value']
+	  $.ajax({
+	    type: "POST",
+	    url: "{% url 'edit_post' post.pk post.slug %}",
+	    data: {
+	    	'title': title,
+	    	'choice': choice,
+	    	'thumbnail': thumbnail,
+	    	'content': content,
+	    	'description': description,
+	    	'save': save,
+	      'csrfmiddlewaretoken': '{{ csrf_token }}',
+	    },
+	    dataType: "json",
+	    success: function(response){
+		  	M.toast({html: response.message, classes:'toast_btn', displayLength:2500})
+	    },
+	    error: function(request, status, error){
+	  		M.toast({html: 'Save Error', classes:'toast_btn', displayLength:2500})
+	    }
+	  })
+	 });
+ </script>
+{% endblock %}

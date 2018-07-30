@@ -1,0 +1,61 @@
+{% load humanize %}
+{% load widget_tweaks %}
+{% for reply in replies %}
+<div>
+	<div class="detail_comment_reaction_section" id="comment{{ reply.id }}">
+	<a href="{% url 'diary' reply.user.pk %}" class="detail_comment_profile_avatar_image">
+		<img src="{{ reply.user.profile.avatar.url }}" class="detail_comment_profile_avatar_image">
+	</a>
+	<div class="detail_comment_reaction">
+		<div class="detail_comment_reaction_info">
+			<div>
+				<a href="{% url 'diary' comment.user.pk %}" class="black-text detail_comment_reaction_nickname">
+				{{ reply.user.nickname }}
+				</a>
+				<span class="detail_comment_reaction_created_at">{{ reply.created_at|naturaltime }}</span>
+			</div>
+		  {% if user == reply.user %}
+		  <div>
+				<i class="material-icons del_comment" name="{{ reply.id }}">&#xe14c</i>
+		  </div>
+		  {% endif %}
+		</div>
+		<div class="detail_comment_reaction_content">
+			{{ reply.comment }}
+		</div>
+		<div class="reply_reply_toggle_btn" data-target="{{ reply.id }}">Reply</div>
+		<div class="reply_comment" style="display: none;" id="reply_comment{{ reply.id }}">
+      <form method="post" autocomplete="off" novalidate>
+    		{% csrf_token %}
+    		<input type="hidden" class="post_id" name="{{ post.id }}">
+				<div class="detail_comment_reaction_form" id="reply_comment_post{{reply.id}}">
+				{% if user.is_authenticated %}
+	      	{% render_field commentform.comment type="text" id="comment_form5"%}
+	      	<button class="btn red lighten-1  right reply_to_reply" type="submit" name="{{ reply.id }}" value="{{ comment.id }}">save</button>
+		    {% else %}
+	      	{% render_field commentform.comment type="text" class="add_comment_btn" id="comment_form6"%} 
+				  <input type="button" class="btn right red lighten-1 add_comment_btn" value="save" onclick="M.toast({html:'Please login', classes:'toast_btn', displayLength:2500} )">
+		    {% endif %}
+				</div>
+      </form>	
+		</div>	
+	</div>
+	</div>
+</div>
+{% endfor %}
+{% block javascript %}
+<script>
+	$('.add_comment_btn').keydown(function() {
+    if (event.keyCode === 13) {
+      event.preventDefault();
+      M.toast({html:'Please login', classes:'toast_btn', displayLength:2500})
+      return
+    }
+	});
+	$(document).ready(function(){
+		$('.reply_reply_toggle_btn').off('click').on('click',function() {
+      $(this).parents('.detail_comment_reaction').find('#reply_comment' + $(this).data('target')).fadeToggle(100);
+		});
+	});
+</script>
+{% endblock %}

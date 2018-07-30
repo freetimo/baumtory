@@ -1,0 +1,13 @@
+<div class="follow_profile">
+	<a href="{% url 'diary' follow.user.id %}" class="follow_profile_avatar_image">
+		<img src="{{ follow.avatar.url }}" class="follow_profile_avatar_image">
+	</a>
+	<div>
+		<div class="follow_nickname">
+			<a href="{% url 'diary' follow.user.id %}" class="black-text">
+				{{ follow.user.nickname }}
+			</a>
+		</div>
+		<div class="follow_description">{{ follow.description }}</div>
+	</div>
+</div>

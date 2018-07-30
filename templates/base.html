@@ -1,0 +1,99 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>{% block title %}{% endblock %}Baumtory</title>
+    <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}">
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content="{% block meta %}Find stories and experiences that you are interested in.{% endblock %}">
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+    {% block stylesheet %}{% endblock %}
+  </head>
+  <body>
+    <div class="progress red lighten-1" style="height: 1.1px; margin: 0;">
+      <div class="indeterminate red lighten-1"></div>
+    </div>
+    {% block body %}
+      <div class="nav">  
+        <div class="nav-wrapper">
+          <div class="nav_logs">
+            <a href="{% url 'home' %}">
+              <div class="nav_log_image">baumtory</div>
+            </a>
+            <a href="{% url 'home' %}">
+              <div class="nav_log_text_image">baumtory</div>
+            </a>
+          </div>
+          <div>
+            <form action="{% url 'search' %}" method="GET" autocomplete="off">
+              <div class="input-field search_box">
+                <input id='search' style="margin:0;" type="search" name="search" value="{{ request.GET.search }}">
+                <label class="label-icon" for="search"><i class="material-icons nav_icon_search">&#xe8b6</i></label>
+              </div>
+            </form>
+          </div>
+          {% if request.user.is_authenticated %}
+          <div class="nav_icons">
+            <div class="nav_icons_trigger">
+              <a href='{% url "follow_post" %}' id="nav_icon_menu">
+                <div class="hidden_nav_text">Feed</div>
+                <i class="material-icons nav_icon_menu">&#xe87d </i>
+              </a>
+            </div>
+            <div class="nav_icons_trigger">
+              <a href='{% url "diary" request.user.pk %}' id="nav_icon_user">
+                <div class="hidden_nav_text">Profile</div>
+                <img src="{{ request.user.profile.avatar.url }}" class="nav_icon_user" alt="">
+              </a>
+            </div>
+          </div>
+          {% else %}
+          <div class="nav_icons">
+            <a href="{% url 'login' %}?next={{request.path}}" class="nav_login">login</a>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      {% block content %}
+      {% endblock %}
+    {% endblock body %} 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="/static/js/jquery-3.3.1.min.js"><\/script>')</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
+    <script>
+      if (! $.fn.modal) {
+        $("head").prepend('<link rel="stylesheet" href="/static/css/materialize.min.css">');
+        document.write('<script src="/static/js/materialize.min.js"><\/script>');
+      };
+    </script>
+    <script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
+    <script src="{% static 'js/infinite.min.js' %}"></script>
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script>
+      $(".search_box").keydown(function(key) {
+        if (key.keyCode == 13) {
+          var search = $(".search_box>input[type=search]").val();
+          search = $.trim(search);
+          if ( search == "") {
+            return false
+          }
+        }
+      });
+      $(window).on('load', function() {  
+        $('.indeterminate').fadeOut(); 
+        $('.progress').delay(300).fadeOut('slow'); 
+        $('body').delay(300).css({'overflow-y':'visible'});
+      })
+    </script>
+    {% block javascript %}{% endblock %}
+  </body>
+</html>
+
+

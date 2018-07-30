@@ -1,0 +1,19 @@
+<div>
+	<div>
+		<a href="{% url 'detail' post.pk post.slug %}"><img src="{{ post.thumbnail.url }}" class="thumbnail_image"></a>
+	</div>
+	<div>
+		<a href="{% url 'detail' post.pk post.slug %}" class="black-text">
+			<div class="article_title">
+			{{ post.title|truncatechars:40 }}
+		</div>
+		</a>
+	</div>
+	<div>
+		<a href="{% url 'diary' post.user.pk %}" class="grey-text lighten-1">
+			<span class="article_nickname">
+			{{ post.user.nickname }}
+			</span>
+		</a>
+	</div>
+</div>

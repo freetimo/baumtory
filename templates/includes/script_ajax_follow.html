@@ -1,0 +1,27 @@
+<script>
+$(document).on('click', '.follow', function(){
+  var pk = $(this).attr('name');
+  $.ajax({
+    type: "POST",
+    url: "{% url 'follow' %}",
+    data: {
+      'pk': pk,
+      'csrfmiddlewaretoken': '{{ csrf_token }}',
+    },
+    dataType: "json",
+    success: function(response){
+	  	M.toast({html: response.message, classes:'toast_btn', displayLength:2500})
+      if(response.status){
+        $("input.follow[name="+pk+"]").val("Following");
+        $("input.follow[name="+pk+"]").toggleClass('follow_btn following_btn');
+      }else{
+        $("input.follow[name="+pk+"]").val("Follow");
+        $("input.follow[name="+pk+"]").toggleClass('following_btn follow_btn');
+      }
+    },
+    error: function(request, status, error){
+  		M.toast({html: 'Error', classes:'toast_btn', displayLength:2500})
+    }
+  })
+ });
+</script>

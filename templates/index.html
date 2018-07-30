@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="article">
+	<div id="fun">
+		<div class="category_title">Fun</div>
+		<div class="aticle_content">
+			{% for post in posts %}
+				{% include 'includes/post.html' %}
+			{% endfor %}
+		</div>
+	</div>
+	<div id="id_first_load"></div>
+	<div id="id_second_load"></div>
+	{% include 'includes/loading.html' %}
+</div>
+{% endblock %}
+{% block javascript %}
+<script>
+	$(document).ready(function () {
+		var first_load = true
+		var second_load = false
+		if (first_load) {
+	    if (first_load && $('#fun').height() <= $(window).height()) {
+	 			$('.loading').show();
+			  $( '#id_first_load' ).load( '{% url "category" %} #first_load, #second_load' );
+	    	first_load = false
+	    	second_load = false
+	 			$('.loading').hide();
+	    }
+		  $(document).on('scroll', function() {
+		    var maxHeight = $(document).height();
+		    var currentScroll = $(window).scrollTop() + $(window).height();
+		    if (first_load && maxHeight <= currentScroll + 200) {
+     			$('.loading').show();
+				  $( '#id_first_load' ).load( '{% url "category" %} #first_load' );
+		    	first_load = false
+		    	second_load = true
+     			$('.loading').hide();
+		    }
+		    if (second_load && $("#"+'review').length != 0 && maxHeight <= currentScroll + 100) {
+     			$('.loading').show();
+				  $( '#id_second_load' ).load( '{% url "category" %} #second_load' );
+		    	second_load = false
+     			$('.loading').hide();
+		    }
+		  })
+		}
+	});
+</script>
+{% endblock %}

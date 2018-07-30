@@ -1,0 +1,38 @@
+{% if is_paginated %}
+  <ul class="pagination">
+    {% if page_obj.number > 1 %}
+      <li class="waves-effect">
+        <a href="?page=1">
+          <i class="material-icons page_icon">&#xe5dc</i>
+        </a>
+      </li>
+    {% else %}
+      <li class="disabled">
+        <i class="material-icons page_icon">&#xe5dc</i>
+      </li>
+    {% endif %}
+    {% for i in paginator.page_range %}
+      {% if page_obj.number == i %}
+        <li class="active red lighten-1">
+          <a href="#!">{{ i }}</a>
+        </li>
+      {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %}
+        <li class="waves-effect">
+          <a href="?page={{ i }}">{{ i }}</a>
+        </li>
+      {% endif %}
+    {% endfor %}
+    {% if page_obj.number != paginator.num_pages %}
+      <li class="waves-effect">
+        <a class="page-link" href="?page={{ paginator.num_pages }}">
+          <i class="material-icons page_icon">&#xe5dd</i>
+        </a>
+      </li>
+    {% else %}
+      <li class="disabled">
+        <i class="material-icons page_icon">&#xe5dd</i>
+      </li>
+    {% endif %}
+  </ul>
+{% endif %}
+

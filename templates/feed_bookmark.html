@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}Bookmarks - {% endblock %}
+{% block content %}
+	<div class="follow_bookmark_nav">
+		<span><a href="{% url 'follow_post' %}" class="follow_bookmark_btn">Follow</a></span>
+		<span class="bookmark_nav black-text follow_bookmark_btn">Bookmarks</span>
+	</div>
+	{% if posts %}
+	<div class="bookmark_article">
+		<div class="aticle_content">
+			{% for bookmark in posts %}
+				<div class=" thumbnail">
+					<div>
+						<a href="{% url 'detail' bookmark.post.pk bookmark.post.slug %}"><img src="{{ bookmark.post.thumbnail.url }}" class="thumbnail_image"></a>
+					</div>
+					<div>
+						<a href="{% url 'detail' bookmark.post.pk bookmark.post.slug %}" class="black-text">
+							<div class="article_title">
+							{{ bookmark.post.title|truncatechars:40 }}
+						</div>
+						</a>
+					</div>
+					<div>
+						<a href="{% url 'diary' bookmark.post.user.pk %}" class="grey-text lighten-1">
+							<span class="article_nickname">
+							{{ bookmark.post.user.nickname }}
+							</span>
+						</a>
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+		{% include 'includes/pagination.html' %} 
+	</div>
+	{% else %}
+    <div class="container feed_card">
+      <div class="row">
+        <div class="col s12 m6 offset-m3">
+          <div class="card">
+            <div class="card-content">
+              <span class="card-title">Bookmarks</span>
+              <div class="card_message">
+								This is where you'll see posts you add bookmark.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>  
+	{% endif %}
+{% endblock %}
+{% block javascript %}
+<script>
+	$('#nav_icon_menu').click(function(e) { e.preventDefault(); });
+</script>
+{% endblock %}
