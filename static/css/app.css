@@ -54,16 +54,18 @@ body.progress {
 	display: none;
 }
 .nav_log_image{
+	background: url('../img/logo.png');
 	background-repeat: no-repeat;
-	background: url('../img/logo.png') -5px -5px;
+	background-size: cover;
 	width: 25px;
 	height: 25px;
 	margin-right: 3px;
 }
 .nav_log_text_image{
+	background: url('../img/logo.png') -28px;
 	background-repeat: no-repeat;
-	background: url('../img/logo.png') -36px -10px;
-	width: 82px;
+	background-size: cover;
+	width: 85px;
 	height: 25px;
 }
 .search_box{

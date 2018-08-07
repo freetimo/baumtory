@@ -4,6 +4,9 @@
 {% load static %}
 {% block title %}{{ post.title }} - {% endblock %}
 {% block meta %}{{ post.description }}{% endblock %}
+{% block og_title %}{{ post.title }} - {% endblock %}
+{% block og_img %}{{ post.thumbnail.url }}{% endblock %}
+{% block og_description %}{{ post.description }}{% endblock %}
 {% block content %}
 <div class="detail_main">
 	<div>
