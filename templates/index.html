@@ -37,7 +37,7 @@
 		    	second_load = true
      			$('.loading').hide();
 		    }
-		    if (second_load && $("#"+'review').length != 0 && maxHeight <= currentScroll + 100) {
+		    if (second_load && $("#"+'lifestyle').length != 0 && maxHeight <= currentScroll + 100) {
      			$('.loading').show();
 				  $( '#id_second_load' ).load( '{% url "category" %} #second_load' );
 		    	second_load = false
