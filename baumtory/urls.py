@@ -1,4 +1,5 @@
 from django.urls import re_path, path, include
+from django.views.generic import TemplateView
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from posts import views
@@ -65,6 +66,10 @@ urlpatterns = [
             template_name='password_change_done.html'
         ), 
         name='password_change_done'), 
+    path('robots.txt/', TemplateView.as_view(
+        template_name="robots.txt", content_type="text/plain"
+        ), 
+        name="project_robots_file"),
     path('help_bear/', admin.site.urls),
 ]
 if settings.DEBUG:
