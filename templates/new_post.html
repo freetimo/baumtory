@@ -13,6 +13,9 @@
 	    </div>
 			<div class="post_select">
 				{% render_field form.choice %}
+	      {% for error in form.choice.errors %}
+	      	<span class="helper-text red-text">{{ error }}</span>
+	      {% endfor %}
 			</div>
 		  <div class="file-field input-field post_thumbnail_form">
 		  	<div class='btn red lighten-1'>
@@ -44,7 +47,6 @@
 {% block javascript %}
 {% include 'includes/quilljs.html' %} 
 <script>
-  
   $(document).ready(function(){
     $('select').formSelect();
   });

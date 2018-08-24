@@ -5,12 +5,14 @@ from django.contrib.auth import login as auth_login
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils.decorators import method_decorator
-from django.views.generic import ListView
+from django.utils.text import slugify
 from django.views.decorators.http import require_POST
+from django.views.generic import ListView
 from django.http import JsonResponse
 from django.db import transaction
-from .forms import UserCreationForm, UserChangeForm, ProfileAvatarForm, ProfileDescriptionForm
-from .models import Profile, Relation
+from .forms import UserCreationForm, UserChangeForm, ProfileAvatarForm, ProfileDescriptionForm, ClubCreationForm, ClubThumbnailForm, ClubDescriptionForm
+from .models import Profile, Relation, Club, Club_Relation
+from posts.models import Post
 
 User = get_user_model()
  
@@ -22,7 +24,7 @@ def signup(request):
       auth_login(request, user)
       return redirect('home')
   else:
-  	form = UserCreationForm()
+    form = UserCreationForm()
   return render(request, 'signup.html', {'form': form})
 
 
@@ -37,7 +39,7 @@ def edit_user(request):
       user_form.save()
       profile_avatar_form.save()
       profile_description_form.save()
-      messages.success(request, 'Your profile has been successfully updated!')
+      messages.success(request, 'Your profile was successfully updated!')
       return redirect('edit_user')
     else:
       ctx = {
@@ -69,7 +71,7 @@ def follow(request):
       status = 1
   else:
       relation.delete()
-      message = 'Stop following'
+      message = 'Cancel to Follow'
       status = 0
 
   ctx = {
@@ -80,7 +82,7 @@ def follow(request):
 
 
 @login_required
-def followers(request, pk):
+def followers(request, pk, slug):
   follow_set = request.user.profile.get_follower
   page = request.GET.get('page', 1)
 
@@ -95,7 +97,7 @@ def followers(request, pk):
 
   
 @login_required
-def following(request, pk):
+def following(request, pk, slug):
   follow_set = request.user.profile.get_following
   page = request.GET.get('page', 1)
 
@@ -108,3 +110,144 @@ def following(request, pk):
     follows = paginator.page(paginator.num_pages)
 
   return render(request, 'following.html', {'follows': follows})
+
+  
+@login_required
+def joining_club(request, pk, slug):
+  join_set = request.user.profile.get_joining
+  page = request.GET.get('page', 1)
+
+  paginator = Paginator(join_set, 20)
+  try:
+    clubs = paginator.page(page)
+  except PageNotAnInteger:
+    clubs = paginator.page(1)
+  except EmptyPage:
+    clubs = paginator.page(paginator.num_pages)
+
+  return render(request, 'join_clubs.html', {'clubs': clubs})
+
+
+@login_required
+@require_POST
+def join(request):
+  from_user = request.user.profile
+  pk = request.POST.get('pk')
+  to_club = get_object_or_404(Club, pk=pk)
+  relation, created = Club_Relation.objects.get_or_create(from_user=from_user, to_club=to_club)
+
+  if created:
+      message = 'Start to join'
+      status = 1
+  else:
+      relation.delete()
+      message = 'Cancel to join'
+      status = 0
+
+  ctx = {
+      'message': message,
+      'status': status,
+      'joiner_count': to_club.joiner_count
+  }
+  return JsonResponse(ctx)
+
+class ClubsListView(ListView):
+  queryset = Club.objects.exclude(title='No choice')
+  template_name = 'clubs.html'
+  context_object_name = 'clubs'
+  paginate_by = 20
+
+
+@login_required
+def new_club(request):
+  if request.method == 'POST':
+    form = ClubCreationForm(request.POST, request.FILES)
+    if form.is_valid():
+      title = ''.join(c for c in request.POST.get('title').capitalize() if c.isalnum() or c == ' ')
+      qs = Club.objects.filter(title=title)
+      if qs.filter(title=title).exists():
+        messages.error(request,'Club with this Title already exists.')
+        return redirect('new_club')
+      else:
+        club = form.save(commit=False)
+        club.user = request.user
+        club.title = title
+        club.save()
+        Club_Relation.objects.create(from_user=request.user.profile, to_club=club)
+        return redirect('club', slug=club.slug)
+  else:
+    form = ClubCreationForm()
+  return render(request, 'new_club.html', {'form': form})
+
+
+@login_required
+@transaction.atomic
+def edit_club(request, slug):
+  club = get_object_or_404(Club, slug=slug)
+  if request.method == 'POST':
+    club_description_form = ClubDescriptionForm(request.POST, instance=club)
+    club_thumbnail_form = ClubThumbnailForm(request.POST, request.FILES, instance=club)
+    if club_thumbnail_form.is_valid() and club_description_form.is_valid():
+      club_thumbnail_form.save()
+      club_description_form.save()
+      messages.success(request, 'Your club was successfully updated!')
+      return redirect('edit_club', slug=club.slug)
+    else:
+      club_description_form = ClubDescriptionForm(instance=club)
+      club_thumbnail_form = ClubThumbnailForm()
+      ctx = {
+        'club': club,
+        'club_thumbnail_form': club_thumbnail_form,
+        'club_description_form': club_description_form
+      }
+      messages.success(request, "Something went wrong!")
+      return redirect('edit_club', slug=club.slug)
+  else:
+    club_description_form = ClubDescriptionForm(instance=club)
+    club_thumbnail_form = ClubThumbnailForm()
+    ctx = {
+    'club': club,
+    'club_thumbnail_form': club_thumbnail_form,
+    'club_description_form': club_description_form
+    }
+  return render(request, 'edit_club.html', ctx)
+
+
+def club(request, slug):
+  club = get_object_or_404(Club.objects.select_related('user',), slug=slug)
+  post = Post.objects.filter(choice=club.title).exclude(published=False).select_related('user__profile',)
+
+  page = request.GET.get('page', 1)
+  paginator = Paginator(post, 20)
+  try:
+    posts = paginator.page(page)
+  except PageNotAnInteger:
+    posts = paginator.page(1)
+  except EmptyPage:
+    posts = paginator.page(paginator.num_pages)
+
+  ctx = {
+    'club': club,
+    'posts': posts,
+  }
+  return render(request, 'club.html', ctx)
+
+
+def members(request, slug):
+  club = get_object_or_404(Club, slug=slug)
+  member_set = club.get_joiner
+  page = request.GET.get('page', 1)
+
+  paginator = Paginator(member_set, 20)
+  try:
+    members = paginator.page(page)
+  except PageNotAnInteger:
+    members = paginator.page(1)
+  except EmptyPage:
+    members = paginator.page(paginator.num_pages)
+
+  ctx = {
+  'members': members, 
+  'club': club
+  }
+  return render(request, 'members.html', ctx)

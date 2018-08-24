@@ -1,22 +1,22 @@
 {% extends 'base.html' %}
-{% block title %}Followers - {% endblock %}
+{% block title %}members - {% endblock %}
 {% block content %}
 <div class="follow_main">
 	<div class="follow_top">
-		<span class="follow_title">followers</span>
-		<span><a href="{% url 'diary' request.user.pk request.user.profile.slug %}"><i class="material-icons follow_close right" style="padding:0;">&#xe5cd</i></a></span>
+		<span class="follow_title">{{ club.title }} - members</span>
+		<span><a href="{% url 'club' club.slug %}"><i class="material-icons follow_close right" style="padding:0;">&#xe5cd</i></a></span>
 	</div>
 	<div>
 	  <div class="infinite-container">
-		{% for follow in follows %}
+		{% for follow in members %}
 		  <div class="infinite-item">
 				{% include 'includes/follow.html' %}
 			</div>
 		{% endfor %}
 		</div>
 		{% include 'includes/loading.html' %}
-	  {% if follows.has_next %}
-	    <a class="infinite-more-link" href="?page={{ follows.next_page_number }}"></a>
+	  {% if members.has_next %}
+	    <a class="infinite-more-link" href="?page={{ members.next_page_number }}"></a>
 	  {% endif %}
 	</div>
 </div>

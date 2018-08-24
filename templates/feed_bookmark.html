@@ -7,7 +7,7 @@
 	</div>
 	{% if posts %}
 	<div class="bookmark_article">
-		<div class="aticle_content">
+		<div class="article_content">
 			{% for bookmark in posts %}
 				<div class=" thumbnail">
 					<div>
@@ -21,7 +21,7 @@
 						</a>
 					</div>
 					<div>
-						<a href="{% url 'diary' bookmark.post.user.pk %}" class="grey-text lighten-1">
+						<a href="{% url 'diary' bookmark.post.user.pk bookmark.post.user.profile.slug %}" class="grey-text lighten-1">
 							<span class="article_nickname">
 							{{ bookmark.post.user.nickname }}
 							</span>

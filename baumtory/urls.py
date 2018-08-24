@@ -9,7 +9,6 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('', views.home, name='home'),
-    path('category/', views.CategoryListView.as_view(), name='category'),
     path('post/new/', views.new_post, name='new'),
     path('upload/image/', views.upload_image, name='upload_image'),
     path('post/<int:pk>/<str:slug>/', views.post_detail, name='detail'),
@@ -17,6 +16,16 @@ urlpatterns = [
     path('post/<int:pk>/<str:slug>/delete/', views.PostDeleteView.as_view(), name='delete'),
     path('post/like/', views.post_like, name='post_like'),
     path('post/dislike/', views.post_dislike, name='post_dislike'),
+    path('explore/', accounts_views.ClubsListView.as_view(), name='clubs'),
+    path('club/no-choice/', TemplateView.as_view(
+            template_name="404.html",
+        ), 
+        name='no-choice'),
+    path('club/<str:slug>/', accounts_views.club, name='club'),
+    path('club/<str:slug>/edit', accounts_views.edit_club, name='edit_club'),
+    path('club/<str:slug>/members', accounts_views.members, name='members'),
+    path('make/club/', accounts_views.new_club, name='new_club'),
+    path('join/', accounts_views.join, name='join'),
     path('feed/follow/', views.FollowPostListView.as_view(), name='follow_post'),
     path('follow/', accounts_views.follow, name='follow'),
     path('feed/bookmark/', views.BookmarkListView.as_view(), name='bookmark_post'),
@@ -26,9 +35,10 @@ urlpatterns = [
     path('comment/dislike/', views.comment_dislike, name='comment_dislike'),
     path('comment/new/', views.comment_new, name='comment_new'),
     path('comment/delete/', views.comment_delete, name='comment_delete'),
-    path('diary/<int:pk>/', views.diary, name='diary'),
-    path('diary/<int:pk>/followers/', accounts_views.followers, name='followers'),
-    path('diary/<int:pk>/following/', accounts_views.following, name='following'),
+    path('diary/<int:pk>/<str:slug>/', views.diary, name='diary'),
+    path('diary/<int:pk>/<str:slug>/followers/', accounts_views.followers, name='followers'),
+    path('diary/<int:pk>/<str:slug>/following/', accounts_views.following, name='following'),
+    path('diary/<int:pk>/<str:slug>/club/', accounts_views.joining_club, name='joining_club'),
     path('result/', views.SearchListView.as_view(), name='search'),
     path('signup/', accounts_views.signup, name='signup'),
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
@@ -67,7 +77,7 @@ urlpatterns = [
         ), 
         name='password_change_done'), 
     path('robots.txt/', TemplateView.as_view(
-        template_name="robots.txt", content_type="text/plain"
+            template_name="robots.txt", content_type="text/plain"
         ), 
         name="project_robots_file"),
     path('help_bear/', admin.site.urls),

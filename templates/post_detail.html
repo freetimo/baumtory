@@ -14,12 +14,12 @@
 		<div class="detail_header_profile">
 			<div class="detail_header_profile_info">
 				<div>
-					<a href="{% url 'diary' post.user.pk %}" class="detail_header_profile_avatar_image" style="margin:0;">
+					<a href="{% url 'diary' post.user.pk post.user.profile.slug %}" class="detail_header_profile_avatar_image" style="margin:0;">
 						<img src="{{ post.user.profile.avatar.url }}" class="detail_header_profile_avatar_image">
 					</a>
 				</div>
 				<div>
-					<a href="{% url 'diary' post.user.pk %}">
+					<a href="{% url 'diary' post.user.pk post.user.profile.slug %}">
 						<div class="detail_header_profile_nickname">{{ post.user.nickname }}</div>
 					</a>
 					<div class="detail_header_profile_created_at">{{ post.published_at|naturaltime }}</div>
@@ -89,17 +89,21 @@
 		<div class="detail_footer_info">
 			<div class="detail_footer_profile">
 				<div class="detail_footer_profile_info">
-					<a href="{% url 'diary' post.user.pk %}" class="detail_footer_profile_avatar_image">
+					<a href="{% url 'diary' post.user.pk post.user.profile.slug %}" class="detail_footer_profile_avatar_image">
 						<img src="{{ post.user.profile.avatar.url }}" class="detail_footer_profile_avatar_image">
 					</a>
 					<div>
-						<a href="{% url 'diary' post.user.pk %}">
+						<a href="{% url 'diary' post.user.pk post.user.profile.slug %}">
 							<span class="detail_footer_profile_nickname">{{ post.user.nickname }}</span>
 						</a>			
-						{% if post.choice != 'no choice' %}
-						<div class="detail_footer_choice">{{ post.choice }}</div>		
-						{% endif %}
-				</div>
+						<div >
+							{% if not post.choice == 'No choice'%}
+							<a href="{% url 'club' club.slug %}" class="detail_footer_choice">
+								{{ post.choice }}
+							</a>
+							{% endif %}
+						</div>		
+					</div>
 				</div>
 				{% if request.user.is_authenticated %}
 					{% if request.user != post.user %}
@@ -137,13 +141,13 @@
 		    {% for comment in comments %}
 		    <div class="infinite-item">
 					<div class="detail_comment_reaction_section" id="comment{{ comment.id }}">
-						<a href="{% url 'diary' comment.user.pk %}" class="detail_comment_profile_avatar_image">
+						<a href="{% url 'diary' comment.user.pk comment.user.profile.slug %}" class="detail_comment_profile_avatar_image">
 							<img src="{{ comment.user.profile.avatar.url }}" class="detail_comment_profile_avatar_image">
 						</a>
 						<div class="detail_comment_reaction">
 							<div class="detail_comment_reaction_info">
 								<div>
-									<a href="{% url 'diary' comment.user.pk %}" class="black-text detail_comment_reaction_nickname">
+									<a href="{% url 'diary' comment.user.pk comment.user.profile.slug %}" class="black-text detail_comment_reaction_nickname">
 									{{ comment.user.nickname }}
 									</a>
 									<span class="detail_comment_reaction_created_at">{{ comment.created_at|naturaltime }}</span>
@@ -201,7 +205,7 @@
 							</div>
 							<div class="hidden_comment_contents">
 								{% if comment.pk in replies %}
-								<div class="load_comment_btn black-text" id="load_comment_btn{{ comment.id }}" name="{{ comment.id }}">Load more comments</div>
+								<div class="load_comment_btn black-text" id="load_comment_btn{{ comment.id }}" name="{{ comment.id }}">Load more replies</div>
 								{% endif %}
 								<div id="reply_comment_load{{comment.id}}"></div>
 								<div id="reply_comment_list_ajax_post{{comment.id}}"></div>

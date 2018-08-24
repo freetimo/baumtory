@@ -4,7 +4,7 @@
 <div class="follow_main">
 	<div class="follow_top">
 		<span class="follow_title">following</span>
-		<span><a href="{% url 'diary' request.user.pk %}"><i class="material-icons follow_close right" style="padding:0;">&#xe5cd</i></a></span>
+		<span><a href="{% url 'diary' request.user.pk request.user.profile.slug%}"><i class="material-icons follow_close right" style="padding:0;">&#xe5cd</i></a></span>
 	</div>
 	<div>
 	  <div class="infinite-container">

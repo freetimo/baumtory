@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block title %}{{ club.title }} - {% endblock %}
+{% block content %}
+<div class="diary_main">
+	<div class="diary_header">
+		{% if request.user == club.user %}
+			<div class="profile_header_image">
+				<img src="{{ club.thumbnail.url }}" class="club_thumbnail_image">
+			</div>
+			<div class="profile_header">
+				<div class="diary_profile_info">
+					<div class="diary_profile_nickname">{{ club.title }}</div>
+					<div>
+						<a href="#modal1" class="modal-trigger">
+			      	<input class="btn my_diary_btn white red-text text-lighten-1" type="submit" value="My club">
+						</a>
+						<div id="modal1" class="modal" style="margin-top:12%; width: 30rem; border-radius: 5px 5px; border: none;">
+							<div class="modal-content" style="padding: 0;">
+                <a href="{% url 'edit_club' club.slug %}">
+									<div class="my_diary_menus">Settings</div>
+                </a>
+								<div class="divider"></div>
+								<div class="modal-close my_diary_menus">Close</div>		
+							</div>
+						</div>
+					</div>
+				</div>
+				<div>
+					<span class="posts_count">
+							posts {{posts|length}}
+					</span>
+					<span>
+						<a href="{% url 'members' club.slug %}" class="members_count">
+							members <span id="members_count">{{ club.joiner_count }}</span>
+						</a>
+					</span>
+				</div>
+				<div class="diary_profile_description">{{ club.description }}</div>
+			</div>
+		{% else %}
+			<div class="profile_header_image">
+				<img src="{{ club.thumbnail.url }}" class="club_thumbnail_image">
+			</div>
+			<div class="profile_header">
+				<div class="diary_profile_info"> 
+					<span class="diary_profile_nickname">{{ club.title }}</span>
+					{% if request.user.is_authenticated %}
+  					{% if request.user.pk in club.get_pk_joiner %}
+			      <span>
+				      <input class="btn join joining_btn" type="submit" value="Joining" name="{{ club.id }}">
+			      </span>
+			      {% else %}
+						<span>
+				      <input class="btn join join_btn" type="submit" value="Join" name="{{ club.id }}">
+			      </span>
+			      {% endif %}
+			    {% else %}
+						<span>
+				      <input class="btn join_btn" type="submit" value="Join" onclick="M.toast({html:'Please login', classes:'toast_btn', displayLength:2500} )">
+			      </span>
+			    {% endif %}
+				</div>
+				<div>
+					<span class="posts_count">
+							posts {{posts|length}}
+					</span>
+					<span>
+						<a href="{% url 'members' club.slug %}" class="members_count">
+						  members <span id="members_count">{{ club.joiner_count }}</span>
+						</a>
+					</span>
+				</div>
+				<div class="diary_profile_description">{{ club.description }}</div>
+			</div>
+		{% endif %}
+	</div>
+	<div class="diary_profile_description_mobile">{{ club.description }}</div>
+	<div class="divider divider_mobile"></div>
+	{% if posts %}
+		<div class="article_content">
+		{% for post in posts %}
+			{% include 'includes/post.html' %}
+		{% endfor %}
+		</div>
+		{% include 'includes/def_pagination.html' %}
+	{% else %}
+		<div class="diary_message">
+		No Posts
+		</div>
+	{% endif %}
+</div>
+{% endblock %}
+{% block javascript %}
+<script>
+	$(document).ready(function(){
+		$('.modal').modal();
+	});
+	$(document).on('click', '.join', function(){
+	  var pk = $(this).attr('name');
+	  $.ajax({
+	    type: "POST",
+	    url: "{% url 'join' %}",
+	    data: {
+	      'pk': pk,
+	      'csrfmiddlewaretoken': '{{ csrf_token }}',
+	    },
+	    dataType: "json",
+	    success: function(response){
+		  	M.toast({html: response.message, classes:'toast_btn', displayLength:2500})
+	      if(response.status){
+	        $("input.join[name="+pk+"]").val("Joining");
+	        $("#members_count").html(response.joiner_count);
+	        $("input.join[name="+pk+"]").toggleClass('join_btn joining_btn');
+	      }else{
+	        $("input.join[name="+pk+"]").val("Join");
+	        $("#members_count").html(response.joiner_count);
+	        $("input.join[name="+pk+"]").toggleClass('joining_btn join_btn');
+	      }
+	    },
+	    error: function(request, status, error){
+	  		M.toast({html: 'Error', classes:'toast_btn', displayLength:2500})
+	    }
+	  })
+	 });
+</script>
+{% endblock %}

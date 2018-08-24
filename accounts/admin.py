@@ -3,7 +3,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth import get_user_model
 from .forms import UserCreationForm, UserChangeForm
-from .models import Profile, Relation
+from .models import Profile, Relation, Club, Club_Relation
 
 User = get_user_model()
 
@@ -29,11 +29,9 @@ class UserAdmin(BaseUserAdmin):
 	ordering = ('id', )
 	filter_horizontal = ()
 
-
 class FollowInline(admin.TabularInline):
 	model = Relation
 	fk_name = 'from_user'
-
 
 class ProfileAdmin(admin.ModelAdmin):
 	list_display = ['id', 'user', 'follower_count', 'following_count']
@@ -43,7 +41,17 @@ class ProfileAdmin(admin.ModelAdmin):
 
 	inlines = [FollowInline, ]
 
+class ClubInline(admin.TabularInline):
+	model = Club_Relation
+
+class ClubAdmin(admin.ModelAdmin):
+	list_display = ['id', 'title', ]
+	list_display_links = ['id', 'title', ]
+	search_fields = ['id', 'title']
+
+	inlines = [ClubInline, ]
 
 admin.site.register(User, UserAdmin)
 admin.site.register(Profile, ProfileAdmin)
+admin.site.register(Club, ClubAdmin)
 admin.site.unregister(Group)

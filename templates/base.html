@@ -45,13 +45,19 @@
           {% if request.user.is_authenticated %}
           <div class="nav_icons">
             <div class="nav_icons_trigger">
+              <a href='{% url "clubs" %}' id="nav_icon_club">
+                <div class="hidden_nav_text">Find Clubs</div>
+                <i class="material-icons nav_icon_club">&#xe80b</i>
+              </a>
+            </div>
+            <div class="nav_icons_trigger">
               <a href='{% url "follow_post" %}' id="nav_icon_menu">
                 <div class="hidden_nav_text">Feed</div>
                 <i class="material-icons nav_icon_menu">&#xe87d </i>
               </a>
             </div>
             <div class="nav_icons_trigger">
-              <a href='{% url "diary" request.user.pk %}' id="nav_icon_user">
+              <a href='{% url "diary" request.user.pk request.user.profile.slug %}' id="nav_icon_user">
                 <div class="hidden_nav_text">Profile</div>
                 <img src="{{ request.user.profile.avatar.url }}" class="nav_icon_user" alt="">
               </a>
@@ -85,6 +91,9 @@
           var search = $(".search_box>input[type=search]").val();
           search = $.trim(search);
           if ( search == "") {
+            return false
+          }
+          if ( search == "#") {
             return false
           }
         }

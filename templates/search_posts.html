@@ -17,12 +17,12 @@
 					</div>
 					<div class="search_profile">
 						<div>
-							<a href="{% url 'diary' post.user.pk %}"  class="search_user_avatar_image">
+							<a href="{% url 'diary' post.user.pk post.user.profile.slug %}"  class="search_user_avatar_image">
 								<img src="{{ post.user.profile.avatar.url }}" class="search_user_avatar_image">
 							</a>
 						</div>
 						<div>
-							<a href="{% url 'diary' post.user.pk %}" class="search_user_nickname ">{{ post.user.nickname|truncatechars:14 }} &#8901; {{ post.published_at|naturalday }}</a>
+							<a href="{% url 'diary' post.user.pk post.user.profile.slug %}" class="search_user_nickname ">{{ post.user.nickname|truncatechars:14 }} &#8901; {{ post.published_at|naturalday }}</a>
 						</div>
 					</div>
 					<div class="search_description">{{ post.description|truncatechars:100 }}</div>

@@ -1,12 +1,12 @@
 {% load humanize %}
 <div class="detail_comment_reaction_section" id="comment{{ comment.id }}">
-	<a href="{% url 'diary' comment.user.pk %}" class="detail_comment_profile_avatar_image">
+	<a href="{% url 'diary' comment.user.pk comment.user.profile.slug %}" class="detail_comment_profile_avatar_image">
 		<img src="{{ comment.user.profile.avatar.url }}" class="detail_comment_profile_avatar_image">
 	</a>
 	<div class="detail_comment_reaction">
 		<div class="detail_comment_reaction_info">
 			<div>
-				<a href="{% url 'diary' comment.user.pk %}" class="black-text detail_comment_reaction_nickname">
+				<a href="{% url 'diary' comment.user.pk comment.user.profile.slug %}" class="black-text detail_comment_reaction_nickname">
 				{{ comment.user.nickname }}
 				</a>
 				<span class="detail_comment_reaction_created_at">{{ comment.created_at|naturaltime }}</span>

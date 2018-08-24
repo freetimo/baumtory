@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block title %}Make new club - {% endblock %}
+{% block content %}
+<div class="valign-wrapper">
+  <div class="valign">
+    <div class="container">
+      <div class="row">
+        <div class="col s12 m6 offset-m3">
+					<div class="card ">
+					  <div class="card-content">
+					    <span class="card-title">New club</span>
+								<form method="post"  enctype="multipart/form-data" autocomplete="off" novalidate> 
+									{% csrf_token %}
+									<div>
+										{% render_field form.title placeholder="Title"%}
+							      {% for error in form.title.errors %}
+							      	<span class="helper-text red-text">{{ error }}</span>
+							      {% endfor %}
+										{% if messages %}
+										  <ul class="messages">
+										    {% for message in messages %}
+										      <li class="{{ message.tags }} red-text" style="font-size: 1.5rem;">{{ message }}</li>
+										    {% endfor %}
+										  </ul>
+										{% endif %}
+									</div>
+								  <div class="file-field input-field post_thumbnail_form">
+								  	<div class='btn red lighten-1'>
+								  		<span>Thumbnail</span>
+							      	{% render_field form.thumbnail type="file"%}
+										</div>
+							      <div class="file-path-wrapper">
+							      	{% render_field form.thumbnail class="file-path validate" type="text" placeholder="Upload thumbnail image" %}
+							      </div>
+								    {% for error in form.thumbnail.errors %}		
+								      <span class="helper-text red-text">{{ error }}</span>
+								    {% endfor %}
+								  </div>
+								  <div>
+										{% render_field form.description placeholder="About this club" %}
+								    {% for error in form.description.errors %}		
+								      <span class="helper-text red-text">{{ error }}</span>
+								    {% endfor %}
+								  </div>
+								  <div>
+										<span class="helper-text red-text"><span class="bold">Please note:</span> If you save your club with this title, you can't change it.</span>
+								  </div>
+								  <br>
+									<button class="btn red lighten-1 right" type="submit" name="action">save</button>
+								</form>
+							<br>
+							<br>
+					  </div>
+					</div>
+        </div>
+      </div>
+    </div>  
+  </div>
+</div>
+{% endblock %}

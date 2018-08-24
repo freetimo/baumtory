@@ -10,7 +10,7 @@
 		</a>
 	</div>
 	<div>
-		<a href="{% url 'diary' post.user.pk %}" class="grey-text lighten-1">
+		<a href="{% url 'diary' post.user.pk post.user.profile.slug %}" class="grey-text lighten-1">
 			<span class="article_nickname">
 			{{ post.user.nickname }}
 			</span>

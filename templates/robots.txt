@@ -1,5 +1,6 @@
-User-agent: *
+﻿User-agent: *
 Disallow: /
 Allow: /$
 Allow: /post/
 Allow: /diary/
+Allow: /club/

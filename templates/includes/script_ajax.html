@@ -213,6 +213,7 @@
       dataType: "html",
       success: function(data, textStatus, jqXHR){
         $("#reply_comment_load"+pk).append(data);
+        $("#load_comment_btn"+pk).text('Hide replies')
         $("#load_comment_btn"+pk).removeClass('load_comment_btn').addClass('hide_comment_btn')
       },
       error: function(request, status, error){
@@ -223,6 +224,7 @@
   // hide_show reply
   $(document).on('click', '.hide_comment_btn', function(){
     var pk = $(this).attr('name');
+    $("#load_comment_btn"+pk).text(($("#load_comment_btn"+pk).text() == 'Hide replies') ? 'Load more replies' : 'Hide replies');
     $("#reply_comment_load"+pk).toggle();
   });
 	// delete comment

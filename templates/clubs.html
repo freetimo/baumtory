@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}clubs - {% endblock %}
+
+{% block content %}
+<div class="clubs_article">
+	<div class="category_title">Club</div>
+	<div class="club_content">
+		{% for club in clubs %}
+		<div class="club_content_part">
+			<div>
+				<a href="{% url 'club' club.slug %}">
+					<img src="{{ club.thumbnail.url }}" class="clubs_thumbnail_image">
+				</a>
+			</div>
+			<div>
+				<a href="{% url 'club' club.slug %}" class="black-text">
+					<div class="club_article_title">
+						{{ club.title|truncatechars:20 }}
+					</div>
+					<div class="club_article_description">
+						{{ club.description|truncatechars:20 }}
+					</div>
+				</a>
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+		{% include 'includes/pagination.html' %} 
+</div>
+{% endblock %}
+{% block javascript %}
+<script>
+	$('#nav_icon_club').click(function(e) { e.preventDefault(); });
+</script>
+{% endblock %}

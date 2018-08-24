@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block title %}Settings - {% endblock %}
+{% block content %}
+<div class="valign-wrapper">
+  <div class="valign">
+    <div class="container">
+      <div class="row">
+        <div class="col s12 m6 offset-m3">
+					<div class="card ">
+					  <div class="card-content">
+					    <span class="card-title">Club Profile</span>
+								<form method="post"  enctype="multipart/form-data" autocomplete="off" novalidate> 
+									{% csrf_token %}
+									{% if club_thumbnail_form.non_field_errors %}
+									  <div class="red-text" role="alert">
+									    {% for error in club_thumbnail_form.non_field_errors %}
+									      <p>{{ error }}</p>
+									    {% endfor %}
+									  </div>
+									{% endif %}
+								  <div class="file-field input-field">
+								  	<div class='btn avatar_btn white'>
+											<img src="{{ club.thumbnail.url }}" class="avatar_image">
+												{{ club_thumbnail_form.thumbnail }}
+										</div>
+							      <div class="file-path-wrapper">
+							      	{% render_field club_thumbnail_form.thumbnail class="file-path validate" type="text" placeholder="Profile image" %}
+							      </div>
+								    {% for error in club_thumbnail_form.thumbnail.errors %}		
+								      <span class="helper-text red-text">{{ error }}</span>
+								    {% endfor %}
+								  </div>
+								  <div class="input-field">
+								    {% render_field club_description_form.description class="validate" placeholder="About this club"%}
+								  </div>
+									{% if messages %}
+									  <ul class="messages">
+									    {% for message in messages %}
+									      <li class="{{ message.tags }} blue-text" style="font-size: 1.5rem;">{{ message }}</li>
+									    {% endfor %}
+									  </ul>
+									{% endif %}
+									<button class="btn red lighten-1 right" type="submit" name="action">save</button>
+								</form>
+							<br>
+							<br>
+					  </div>
+					</div>
+        </div>
+      </div>
+    </div>  
+  </div>
+</div>
+{% endblock %}
+

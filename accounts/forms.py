@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model
-from .models import UserManager, Profile
+from .models import UserManager, Profile, Club
 
 User = get_user_model()
 
@@ -69,14 +69,29 @@ class UserChangeForm(forms.ModelForm):
 		model = User
 		fields = ('nickname',)
 
-
 class ProfileAvatarForm(forms.ModelForm):
 	class Meta:
 		model = Profile
 		fields = ('avatar', )
 
-
 class ProfileDescriptionForm(forms.ModelForm):
 	class Meta:
 		model = Profile
+		fields = ('description', )
+
+
+class ClubCreationForm(forms.ModelForm):
+	thumbnail = forms.ImageField(required=True)
+	class Meta:
+		model = Club
+		fields = ('title', 'thumbnail', 'description')
+
+class ClubThumbnailForm(forms.ModelForm):
+	class Meta:
+		model = Club
+		fields = ('thumbnail', )
+
+class ClubDescriptionForm(forms.ModelForm):
+	class Meta:
+		model = Club
 		fields = ('description', )

@@ -1,4 +1,3 @@
-{% load humanize %}
 <div>
 	<div>
 		<a href="{% url 'detail' post.pk post.slug %}"><img src="{{ post.thumbnail.url }}" class="thumbnail_image"></a>
@@ -11,10 +10,15 @@
 		</a>
 	</div>
 	<div>
-		<a href="{% url 'diary' post.user.pk post.user.profile.slug %}" class="grey-text lighten-1">
-			<div class="article_time">
-			{{ post.published_at|naturalday  }}
-			</div>
-		</a>
+		<span class="article_nickname">
+			<a href="{% url 'diary' post.user.pk post.user.profile.slug %}" class="grey-text lighten-1">
+			{{ post.user.nickname }}
+			</a>
+		</span>
+		{% if not post.choice == "No choice"%}
+		<span class="article_nickname grey-text lighten-1">
+			&#8901; {{ post.choice }}
+		</span>
+		{% endif %}
 	</div>
 </div>

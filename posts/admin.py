@@ -1,7 +1,6 @@
 from django.contrib import admin
 from .models import Post, Comment, Bookmark
 
-
 class PostAdmin(admin.ModelAdmin):
 	list_per_page = 50
 	list_display_links = ['id', 'title', ]
@@ -17,7 +16,6 @@ class CommentAdmin(admin.ModelAdmin):
 	list_filter = ('created_at',)
 	list_display_links = ['id', 'comment', ]
 	list_display = ('id', 'comment', 'reply', 'post', 'created_at')
-
 
 class BookmarkAdmin(admin.ModelAdmin):
 	list_per_page = 50

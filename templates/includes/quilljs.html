@@ -68,7 +68,7 @@
   function insertToEditor(url) {
     // push image url to rich editor.
     const range = editor.getSelection();
-    editor.insertEmbed(range.index, 'image', 'https://www.baumtory.com/media/'+url);
+    editor.insertEmbed(range.index, 'image', 'http://localhost:8000/media/'+url);
   }
   // quill editor add image handler
   editor.getModule('toolbar').addHandler('image', () => {

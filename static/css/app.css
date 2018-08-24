@@ -20,6 +20,9 @@ body.progress {
 .helper-text{
 	font-size: 1.4rem;
 }
+.bold{
+	font-weight: bold;
+}
 /* nav */
 .nav{
 	position: fixed;
@@ -96,6 +99,7 @@ body.progress {
 .nav_icons_trigger{
 	margin-left: 2.5rem;
 }
+.nav_icon_club,
 .nav_icon_menu, 
 .nav_icon_tag{
 	color: rgb(160, 160, 160);
@@ -148,12 +152,13 @@ body.progress {
 	font-size: 1.4rem;
 }
 /* home */
-.article{ 
+.article,
+.clubs_article{ 
 	width: 90%;
 	max-width: 125rem;
 	margin: 6rem auto 3rem;
 }
-.aticle_content{
+.article_content{
 	display: grid;
 	grid-template-columns: repeat(auto-fill,minmax(22rem, 1fr));
   grid-column-gap: 1rem;
@@ -188,6 +193,40 @@ body.progress {
 .page_icon{
 	margin-top: 0.5rem;
 } 
+/* clubs */
+.club_content{
+	display: grid;
+	grid-template-columns: repeat(auto-fill,minmax(25rem, 1fr));
+  grid-column-gap: 1rem;
+  grid-row-gap: 2rem;
+}
+.club_content_part{
+	display: flex;
+}
+.clubs_thumbnail_image,
+.club_thumbnail_image{
+	width: 10rem;
+	height: 10rem;
+	border-radius: 50%;
+	border: 1px solid rgba(239, 83, 80, 0.7);
+	padding: 3px;
+}
+.clubs_thumbnail_image{
+	margin-right: 1rem;
+}
+/*club*/
+.club_thumbnail_image{
+	margin-right: 2rem;
+}
+.club_article_title{
+	font-size: 1.8rem;
+	font-weight: 600;
+	color: rgb(100, 100, 100);
+}
+.club_article_description{
+	font-size: 1.4rem;
+	color: rgb(100, 100, 100);
+}
 /* feed_follow */
 .follow_article,
 .bookmark_article{
@@ -223,6 +262,9 @@ body.progress {
 	color: rgb(100, 100, 100);
 	margin-top: 5rem;
 	margin-bottom: 1rem;
+}
+.infinite_post{
+	margin-bottom: 2rem;
 }
 /* diary */
 .diary_main{
@@ -276,6 +318,9 @@ body.progress {
 .follow{
 	margin-left: 0.5rem;
 }
+.joining_btn,
+.joining_btn:hover,
+.joining_btn:focus,
 .following_btn,
 .following_btn:hover,
 .following_btn:focus{
@@ -284,6 +329,9 @@ body.progress {
 	box-sizing: content-box;
 	color: rgb(100, 100, 100);
 }
+.join_btn,
+.join_btn:hover,
+.join_btn:focus,
 .follow_btn,
 .follow_btn:hover,
 .follow_btn:focus{
@@ -293,9 +341,15 @@ body.progress {
 	color: rgba(0, 0, 0, 0.6);
 }
 .diary_profile_description,
-.follow_num{
+.follow_num,
+.club_num,
+.posts_count,
+.members_count{
 	font-size: 1.5rem;
 	color: rgba(0, 0, 0, 0.6);
+}
+.posts_count{
+	margin-right: 1rem;
 }
 .diary_profile_description{
 	margin-top: 0.5rem;
@@ -338,7 +392,6 @@ body.progress {
 	border-radius: 50%;
 	margin-right: 1rem;
 }
-.follow_count,
 .follow_nickname,
 .search_no_content,
 .toast_btn,
@@ -346,7 +399,8 @@ body.progress {
 .card_message{
 	font-size: 1.5rem;
 }
-.follower_count{
+.follower_count,
+.follow_count{
 	margin-right: 1rem;
 }
 .follow_description{
@@ -713,11 +767,12 @@ body.progress {
 	.search_user_avatar_image{
 		display: none;
 	}
-	.article{
+	.article,
+	.clubs_article{
 	width: 95%;
 	margin: 5rem auto 1rem;
 	}
-	.aticle_content,
+	.article_content,
 	.detail_other_article_content{
 		grid-template-columns: repeat(auto-fill,minmax(14rem, 1fr));
 	  grid-column-gap: 0.5rem;
@@ -741,6 +796,25 @@ body.progress {
 	.category_title{
 		font-size: 2rem;
 		margin-top: 2rem;
+	}
+	.club_content{
+		display: grid;
+		grid-template-columns: repeat(auto-fill,minmax(14rem, 1fr));
+	  grid-column-gap: 1rem;
+	  grid-row-gap: 2rem;
+	}
+	.clubs_thumbnail_image{
+		width: 5rem;
+		height: 5rem;
+		border-radius: 50%;
+		margin-right: 0.5rem;
+		padding: 2px;
+	}
+	.club_article_title{
+		font-size: 1.5rem;
+	}
+	.club_article_description{
+		font-size: 1.4rem;
 	}
 	.diary_main{
 		width: 95%;
@@ -784,7 +858,7 @@ body.progress {
     padding: 0.8rem 0;
 	}
 	.ql-editor .ql-size-large {
-    font-size: 1.6rem;
+    font-size: 1.8rem;
 	}
 	.ql-editor .ql-size-huge{
 	 	font-size: 2rem;

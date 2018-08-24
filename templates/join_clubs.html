@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}My clubs - {% endblock %}
+{% block content %}
+<div class="follow_main">
+	<div class="follow_top">
+		<span class="follow_title">club</span>
+		<span><a href="{% url 'diary' request.user.pk request.user.profile.slug %}"><i class="material-icons follow_close right" style="padding:0;">&#xe5cd</i></a></span>
+	</div>
+	<div>
+	  <div class="infinite-container">
+		{% for club in clubs %}
+      <div class="infinite-item">
+				<div class="follow_profile">
+					<a href="{% url 'club' club.slug %}" class="follow_profile_avatar_image">
+						<img src="{{ club.thumbnail.url }}" class="follow_profile_avatar_image">
+					</a>
+					<div>
+						<div class="follow_nickname">
+							<a href="{% url 'club' club.slug %}" class="black-text">
+								{{ club.title }}
+							</a>
+						</div>
+						<div class="follow_description">{{ club.description }}</div>
+					</div>
+				</div>
+			</div>
+		{% endfor %}
+		</div>
+		{% include 'includes/loading.html' %}
+	  {% if clubs.has_next %}
+	    <a class="infinite-more-link" href="?page={{ clubs.next_page_number }}"></a>
+	  {% endif %}
+	</div>
+</div>
+{% endblock %}
+{% block javascript %}
+{% include 'includes/infinite.html' %}    
+{% endblock %}

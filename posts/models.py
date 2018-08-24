@@ -7,15 +7,6 @@ from imagekit.processors import ResizeToFill
 
 User = get_user_model()
 
-CATEGORY_CHOICES = (
-	("no choice", "No choice"),
-	("fun", "Fun"),
-	("lifestyle", "Lifestyle"),
-	("review", "Review"),
-	("information", "Information"),
-	("thought", "Thought")
-)
-
 class Post(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	title = models.CharField(max_length=50)
@@ -26,7 +17,7 @@ class Post(models.Model):
 		format = 'JPEG',	
 		options = {'quality': 80},
 	)
-	choice = models.CharField(max_length=25, choices=CATEGORY_CHOICES)
+	choice = models.CharField(max_length=30, blank=True)
 	content = JSONField(blank=True, null=True)
 	published = models.BooleanField(default=False)
 	description = models.TextField(blank=True)
@@ -60,7 +51,6 @@ class Post(models.Model):
 	def total_dislikes(self):
 		return self.dislikes.count() 
 
-
 class Comment(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
@@ -83,7 +73,6 @@ class Comment(models.Model):
 	@property
 	def total_dislikes(self):
 		return self.dislikes.count() 
-
 
 class Bookmark(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
