@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load humanize %}
 {% block title %}{{ club.title }} - {% endblock %}
+{% block meta %}{{ club.description }}{% endblock %}
+{% block og_title %}{{ club.title }} - {% endblock %}
+{% block og_img %}{{ club.thumbnail.url }}{% endblock %}
+{% block og_description %}{{ club.description }}{% endblock %}
 {% block content %}
 <div class="diary_main">
 	<div class="diary_header">
