@@ -76,6 +76,9 @@ urlpatterns = [
             template_name='password_change_done.html'
         ), 
         name='password_change_done'), 
+    path('google9a6563a74745c84f.html', TemplateView.as_view(
+            template_name="google9a6563a74745c84f.html"
+        ), name="google_search_console"),
     path('robots.txt/', TemplateView.as_view(
             template_name="robots.txt", content_type="text/plain"
         ), 
