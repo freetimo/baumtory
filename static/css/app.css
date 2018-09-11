@@ -386,7 +386,7 @@ body.progress {
 	margin: 2rem 0;
 }
 .follow_profile_avatar_image,
-.detail_comment_profile_avatar_image
+.detail_comment_profile_avatar_image,
 .join_club_image{
 	width: 4rem;
 	height: 4rem;
