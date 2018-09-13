@@ -326,7 +326,7 @@ body.progress {
 .following_btn:focus{
 	background-color: white;
 	border: 1px solid rgb(160, 160, 160);
-	box-sizing: content-box;
+	box-sizing: border-box;
 	color: rgb(100, 100, 100);
 }
 .join_btn,
