@@ -237,7 +237,7 @@ class PostDeleteView(DeleteView):
 	template_name = 'delete_post.html'
 
 	def get_success_url(self):
-		return reverse_lazy('diary', kwargs={'pk': self.request.user.pk})
+		return reverse_lazy('diary', kwargs={'pk': self.request.user.pk, 'slug': self.request.user.profile.slug})
 
 def reply_load(request):
 	pk = request.POST.get('pk')
