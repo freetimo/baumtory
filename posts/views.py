@@ -1,5 +1,5 @@
 from django.urls import reverse_lazy
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, resolve_url
 from django.views.generic import ListView, UpdateView, DeleteView
 from django.views.decorators.http import require_POST
 from django.core import serializers
@@ -189,6 +189,7 @@ def upload_image(request):
 def edit_post(request, pk, slug):
 	profile = request.user.profile
 	post = get_object_or_404(Post, pk=pk, slug=slug)
+	post_title = post.title
 	if request.method == 'POST':
 		post_thumbnail_form = PostThumbnailForm(request.POST, request.FILES, instance=post)
 		post_edit_form = PostEditForm(profile, request.POST, instance=post)
@@ -196,14 +197,28 @@ def edit_post(request, pk, slug):
 			post_thumbnail_form.save()
 			post_content = post_edit_form.save(commit=False)
 			post_content.content = request.POST.get('content')
-			if request.POST.get('save'):
-				post_content.save()
-				message = 'Saved'
-				return JsonResponse({'message': message})
-			elif request.POST.get('submit'):
-				post_content.published = True
-				post_content.save()
-				return redirect('detail', pk=post.pk, slug=post.slug)
+			if post_title == request.POST.get('title'):
+				if request.POST.get('save'):
+					post_content.save()
+					message = 'Saved'
+					return JsonResponse({'message': message})
+				elif request.POST.get('submit'):
+					post_content.published = True
+					post_content.save()
+					return redirect('detail', pk=post.pk, slug=post.slug)
+			else:
+				if request.POST.get('save'):
+					post_content.save()
+					response = {
+						'status': 1, 
+						'message': "Saved",
+						'url': resolve_url('edit_post', pk=post.pk, slug=post.slug)
+					}
+					return JsonResponse(response)
+				elif request.POST.get('submit'):
+					post_content.published = True
+					post_content.save()
+					return redirect('detail', pk=post.pk, slug=post.slug)
 		else:
 			raise Http404
 	else:

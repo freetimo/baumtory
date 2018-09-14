@@ -77,7 +77,13 @@
 	    },
 	    dataType: "json",
 	    success: function(response){
-		  	M.toast({html: response.message, classes:'toast_btn', displayLength:2500})
+	  	  if(response.status == 1){ 
+ 					window.location = response.url;
+		  		M.toast({html: response.message, classes:'toast_btn', displayLength:2500})
+        }
+        else{
+		  		M.toast({html: response.message, classes:'toast_btn', displayLength:2500})
+        }
 	    },
 	    error: function(request, status, error){
 	  		M.toast({html: 'Save Error', classes:'toast_btn', displayLength:2500})
