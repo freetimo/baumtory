@@ -4,6 +4,7 @@ from django.contrib.postgres.fields import JSONField
 from django.utils.text import slugify
 from imagekit.models import ProcessedImageField
 from imagekit.processors import ResizeToFill
+import re
 
 User = get_user_model()
 
@@ -25,6 +26,7 @@ class Post(models.Model):
 	published_at = models.DateTimeField(auto_now=True)
 	likes = models.ManyToManyField(User, blank=True, related_name='likes')
 	dislikes = models.ManyToManyField(User, blank=True, related_name='dislikes')
+	tag_set = models.ManyToManyField('Tag', blank=True)
 
 	def __str__(self):
 		return self.title	
@@ -34,6 +36,16 @@ class Post(models.Model):
 
 	class Meta:
 		ordering = ['-created_at']
+
+	def tag_save(self):
+		tags = re.findall(r'#(\w+)\b', self.description)
+
+		if not tags:
+			return
+
+		for t in tags:
+			tag, tag_created = Tag.objects.get_or_create(name=t)
+			self.tag_set.add(tag)  
 
 	def save(self):
 		slug = slugify(self.title, allow_unicode=True)
@@ -51,6 +63,12 @@ class Post(models.Model):
 	def total_dislikes(self):
 		return self.dislikes.count() 
 
+class Tag(models.Model):
+	name = models.CharField(max_length=140, unique=True)
+
+	def __str__(self):
+		return self.name
+		
 class Comment(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')

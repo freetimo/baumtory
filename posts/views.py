@@ -153,10 +153,12 @@ def new_post(request):
 			post.content = request.POST.get('content')
 			if request.POST.get('action') == "save":
 				post.save()
+				post.tag_save()
 				return redirect('edit_post', pk=post.pk, slug=post.slug)
 			elif request.POST.get('action') == "submit":
 				post.published = True
 				post.save()
+				post.tag_save()
 				return redirect('detail', pk=post.pk, slug=post.slug)  
 	else:
 		form = PostForm(profile)
@@ -200,15 +202,18 @@ def edit_post(request, pk, slug):
 			if post_title == request.POST.get('title'):
 				if request.POST.get('save'):
 					post_content.save()
+					post_content.tag_save()
 					message = 'Saved'
 					return JsonResponse({'message': message})
 				elif request.POST.get('submit'):
 					post_content.published = True
 					post_content.save()
+					post_content.tag_save()
 					return redirect('detail', pk=post.pk, slug=post.slug)
 			else:
 				if request.POST.get('save'):
 					post_content.save()
+					post_content.tag_save()
 					response = {
 						'status': 1, 
 						'message': "Saved",
@@ -218,6 +223,7 @@ def edit_post(request, pk, slug):
 				elif request.POST.get('submit'):
 					post_content.published = True
 					post_content.save()
+					post_content.tag_save()
 					return redirect('detail', pk=post.pk, slug=post.slug)
 		else:
 			raise Http404

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Post, Comment, Bookmark
+from .models import Post, Tag, Comment, Bookmark
 
 class PostAdmin(admin.ModelAdmin):
 	list_per_page = 50
@@ -23,5 +23,6 @@ class BookmarkAdmin(admin.ModelAdmin):
 	list_display = ('user', 'post', 'created_at')
 
 admin.site.register(Post, PostAdmin)
+admin.site.register(Tag,)
 admin.site.register(Comment, CommentAdmin)
 admin.site.register(Bookmark, BookmarkAdmin)

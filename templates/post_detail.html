@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load post_extras %} 
 {% load widget_tweaks %}
 {% load humanize %}
 {% load static %}
@@ -118,7 +119,7 @@
 		    {% endif %}
 			</div>
 			<div class="detail_footer_description">
-				{{ post.description }}
+				{{ post|add_link|safe }}
 			</div>
 			<div class="divider detail_comment_divider"></div>
 		</div>
