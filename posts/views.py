@@ -90,11 +90,13 @@ class SearchListView(ListView):
 		queryset = super().get_queryset()
 		query = self.request.GET.get("search", None)
 
-		if query is not None:
-			queryset = queryset.filter(
-				Q(title__icontains=query)|
-				Q(description__icontains=query)
-				).distinct()
+		query_list = query.split()
+		if query_list is not None:
+			for query_item in query_list:
+				queryset = queryset.filter(
+					Q(title__icontains=query_item)|
+					Q(description__icontains=query_item)
+					).distinct()
 		else:
 			raise Http404
 		return queryset
