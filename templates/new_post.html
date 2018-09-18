@@ -23,7 +23,7 @@
 	      	{% render_field form.thumbnail type="file"%}
 				</div>
 	      <div class="file-path-wrapper">
-	      	{% render_field form.thumbnail class="file-path validate" type="text" placeholder="Upload thumbnail image" %}
+	      	{% render_field form.thumbnail class="file-path validate" type="text" placeholder="Upload a thumbnail image" %}
 	      </div>
 		    {% for error in form.thumbnail.errors %}		
 		      <span class="helper-text red-text">{{ error }}</span>
@@ -34,7 +34,7 @@
 				<div id="editor_container" class="editor_container" style="height: 90%;"></div>
 			</div>
 			<div class="post_description_form">
-				{% render_field form.description placeholder="Describe this post" %}
+				{% render_field form.description placeholder="details about this post" %}
 		    {% for error in form.description.errors %}		
 		      <span class="helper-text red-text">{{ error }}</span>
 		    {% endfor %}

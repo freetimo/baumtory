@@ -14,7 +14,7 @@
   const editor = new Quill('#editor_container', {
     modules: {toolbar: toolbarOptions},
     theme: 'snow',
-    placeholder: "Title, Thumbnail and Content are required. If you don't fill out these form, you will lose this content. Please make sure you fill out these form.",
+    placeholder: "Title and Thumbnail are required. If you don't fill out these form, you will lose this content. Please make sure you fill out these form.",
   });
   function getContent() {
     var content = document.querySelector('input[name="content"]');
