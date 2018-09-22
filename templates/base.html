@@ -42,7 +42,6 @@
               </div>
             </form>
           </div>
-          {% if request.user.is_authenticated %}
           <div class="nav_icons">
             <div class="nav_icons_trigger">
               <a href='{% url "clubs" %}' id="nav_icon_club">
@@ -56,18 +55,19 @@
                 <i class="material-icons nav_icon_menu">&#xe87d </i>
               </a>
             </div>
+            {% if request.user.is_authenticated %}
             <div class="nav_icons_trigger">
               <a href='{% url "diary" request.user.pk request.user.profile.slug %}' id="nav_icon_user">
                 <div class="hidden_nav_text">Profile</div>
                 <img src="{{ request.user.profile.avatar.url }}" class="nav_icon_user" alt="">
               </a>
             </div>
+            {% else %}
+            <div class="nav_icons_trigger nav_login">
+              <a href="{% url 'login' %}?next={{request.path}}" class="nav_login_a">login</a>
+            </div>
+            {% endif %}
           </div>
-          {% else %}
-          <div class="nav_icons">
-            <a href="{% url 'login' %}?next={{request.path}}" class="nav_login">login</a>
-          </div>
-          {% endif %}
         </div>
       </div>
       {% block content %}

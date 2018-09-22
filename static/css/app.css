@@ -84,10 +84,12 @@ body.progress {
 	padding: 0.3rem;
 }
 .nav_login{
+	margin-bottom: 0.3rem;
+}
+.nav_login_a{
 	font-size: 1.5rem;
 	text-decoration: none;
 	color: rgb(150, 150, 150);
-	margin-bottom: 0.3rem;
 }
 .nav_icons{
 	flex: 1;
@@ -892,6 +894,10 @@ body.progress {
 	}
 	.follow_top{
 		margin-bottom: 0.5rem;
+	}
+	.follower_count,
+	.follow_count{
+		margin-right: 0.5rem;
 	}
 	.follow{
 		float: left;
