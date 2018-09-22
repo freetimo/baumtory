@@ -49,13 +49,13 @@
                 <i class="material-icons nav_icon_club">&#xe80b</i>
               </a>
             </div>
+            {% if request.user.is_authenticated %}
             <div class="nav_icons_trigger">
               <a href='{% url "follow_post" %}' id="nav_icon_menu">
                 <div class="hidden_nav_text">Feed</div>
                 <i class="material-icons nav_icon_menu">&#xe87d </i>
               </a>
             </div>
-            {% if request.user.is_authenticated %}
             <div class="nav_icons_trigger">
               <a href='{% url "diary" request.user.pk request.user.profile.slug %}' id="nav_icon_user">
                 <div class="hidden_nav_text">Profile</div>
@@ -63,6 +63,12 @@
               </a>
             </div>
             {% else %}
+            <div class="nav_icons_trigger">
+              <div id="nav_icon_menu" onclick="M.toast({html:'Please login', classes:'toast_btn', displayLength:2500} )" style="cursor: pointer;">
+                <div class="hidden_nav_text">Feed</div>
+                <i class="material-icons nav_icon_menu">&#xe87d </i>
+              </div>
+            </div>
             <div class="nav_icons_trigger nav_login">
               <a href="{% url 'login' %}?next={{request.path}}" class="nav_login_a">login</a>
             </div>
