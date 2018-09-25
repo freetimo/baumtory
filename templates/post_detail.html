@@ -225,10 +225,10 @@
 	<div class="detail_footer_other_post_section">
 		<div class="detail_other_article">
 			<div class="detail_other_article_content">
-				{% for post in gt_posts.reverse|slice:":5" %}
+				{% for post in gt_posts.reverse|slice:":7" %}
 					{% include 'includes/post_time.html' %}
 				{% endfor %}
-				{% for post in lt_posts|slice:":5" %}
+				{% for post in lt_posts|slice:":7" %}
 					{% include 'includes/post_time.html' %}
 				{% endfor %}
 			</div>
