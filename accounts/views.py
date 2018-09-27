@@ -218,7 +218,7 @@ def club(request, slug):
   post = Post.objects.filter(choice=club.title).exclude(published=False).select_related('user__profile',)
   post_num = len(post)
   page = request.GET.get('page', 1)
-  paginator = Paginator(post, 4)
+  paginator = Paginator(post, 20)
   try:
     posts = paginator.page(page)
   except PageNotAnInteger:
