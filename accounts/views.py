@@ -216,9 +216,9 @@ def edit_club(request, slug):
 def club(request, slug):
   club = get_object_or_404(Club.objects.select_related('user',), slug=slug)
   post = Post.objects.filter(choice=club.title).exclude(published=False).select_related('user__profile',)
-
+  post_num = len(post)
   page = request.GET.get('page', 1)
-  paginator = Paginator(post, 20)
+  paginator = Paginator(post, 4)
   try:
     posts = paginator.page(page)
   except PageNotAnInteger:
@@ -228,6 +228,7 @@ def club(request, slug):
 
   ctx = {
     'club': club,
+    'post_num': post_num,
     'posts': posts,
   }
   return render(request, 'club.html', ctx)
