@@ -2,7 +2,6 @@ import os
 from decouple import config, Csv
 import dj_database_url
 
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -30,6 +29,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'accounts',
+    'ads',
     'posts',
     'widget_tweaks',
     'imagekit',
@@ -138,4 +138,3 @@ DEFAULT_FROM_EMAIL = 'Baumtory <noreply@baumtory.com>'
 EMAIL_SUBJECT_PREFIX = '[Baumtory] '
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 7340032
-

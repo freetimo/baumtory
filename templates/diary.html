@@ -33,6 +33,10 @@
 									<div class="my_diary_menus">Profile</div>
                 </a>
 								<div class="divider"></div>
+                <a href="{% url 'ad' user.pk user.profile.slug%}">
+									<div class="my_diary_menus">Advertisement</div>
+                </a>
+								<div class="divider"></div>
                 <a href="{% url 'logout' %}">
 									<div class="my_diary_menus">Log out</div>		
                 </a>
@@ -138,5 +142,3 @@
 </script>
 {% include 'includes/script_ajax_follow.html' %} 
 {% endblock %}
-
-

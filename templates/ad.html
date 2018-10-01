@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% load widget_tweaks %}
+{% block title %}advertisement - {% endblock %}
+{% block meta %}당신의 비지니스를 응원합니다. 무료로 광고를 게재할 수 있습니다. {% endblock %}
+{% block og_title %}advertisement - {% endblock %}
+{% block og_description %}당신의 비지니스를 응원합니다. 무료로 광고를 게재할 수 있습니다.{% endblock %}
+{% block content %}
+	<div class="ad_article">
+		<form method="post"  enctype="multipart/form-data" autocomplete="off" novalidate> 
+			{% csrf_token %}
+			<div class="ad_title">광고 내역</div>
+			{% if ads %}
+				<table class="centered">
+				  <thead>
+				    <tr>
+				      <th style="width: 38px;">상태</th>
+				      <th>제목</th>
+				      <th>시작날짜</th>
+				      <th>만료날짜</th>
+				    </tr>
+				  </thead>
+					{% for ad in ads %}
+				  <tbody>
+				    <tr>
+				      <td>
+				   		{% if ad.start_date <= today and today <= ad.end_date and ad.published %}노출{% else %}대기{% endif %}
+				      </td>
+				      <td>
+				      	{{ ad.title }}
+				      </td>
+				      <td>
+				      	{{ ad.start_date }}
+				      </td>
+				      <td>
+				      	{{ ad.end_date }}
+				      </td>
+				    </tr>
+				  </tbody>
+					{% endfor %}
+				</table>
+			{% else %}
+			<div class="ad_on_text">
+				아직 진행한 광고가 없습니다.
+			</div>
+			{% endif %}
+			<div class="ad_title">광고할 이미지 업로드</div>
+		  <div class="file-field input-field ad_thumbnail_form">
+		  	<div class='btn red lighten-1'>
+		  		<span>Image</span>
+	      	{% render_field form.image type="file"%}
+				</div>
+	      <div class="file-path-wrapper">
+	      	{% render_field form.image class="file-path validate" type="text" placeholder="Upload a image" %}
+	      </div>
+		    {% for error in form.image.errors %}		
+		      <span class="helper-text red-text">{{ error }}</span>
+		    {% endfor %}
+		  </div>
+	    <div class="ad_message">가로, 세로 3:2 비율의 이미지를 사용해야 합니다. 비율을 넘어가는 이미지는 모두 잘려서 노출됩니다.</div>
+			<div class="ad_title">광고 제목</div>
+		  <div>
+				{% render_field form.title placeholder="title" %}
+		    {% for error in form.title.errors %}		
+		      <span class="helper-text red-text">{{ error }}</span>
+		    {% endfor %}
+		  </div>
+	    <div class="ad_message">광고 이미지 아래에 제목이 노출됩니다.</div>
+			<div class="ad_title">클릭시 이동할 사이트 주소</div>
+		  <div>
+				{% render_field form.web placeholder="website" value="www."%}
+		    {% for error in form.web.errors %}		
+		      <span class="helper-text red-text">{{ error }}</span>
+		    {% endfor %}
+		  </div>
+	    <div class="ad_message">광고 이미지나 제목 클릭 시 작성한 주소로 넘어갑니다.</div>
+			<div class="ad_title">연락 가능 이메일</div>
+		  <div>
+				{% render_field form.email placeholder="email" %}
+		    {% for error in form.email.errors %}		
+		      <span class="helper-text red-text">{{ error }}</span>
+		    {% endfor %}
+		  </div>
+	    <div class="ad_message">계좌정보 등에 대해 메일 발송해드립니다.</div>
+			<div class="ad_title">성함</div>
+		  <div>
+				{% render_field form.name placeholder="name" %}
+		    {% for error in form.name.errors %}		
+		      <span class="helper-text red-text">{{ error }}</span>
+		    {% endfor %}
+		  </div>
+	    <div class="ad_message">
+	    입금하시는 계좌의 예금주명을 작성해주시기 바랍니다. 다를 경우 성함 확인이 불가하여 광고 노출이 이루어 지지 않을 수 있습니다.</div>
+			<div class="ad_title">광고 노출 기간</div>
+		  <div class="date_range">
+		  	<div class="date_form_start">
+					{% render_field form.start_date placeholder="start date" type="text" class="datepicker" %}
+			    {% for error in form.start_date.errors %}		
+			      <span class="helper-text red-text">{{ error }}</span>
+			    {% endfor %}
+		  	</div>
+		  	<div class="date_form_end">
+					{% render_field form.end_date placeholder="end date" type="text" class="datepicker" %}
+			    {% for error in form.end_date.errors %}		
+			      <span class="helper-text red-text">{{ error }}</span>
+			    {% endfor %}
+		  	</div>
+		  </div>
+	    <div class="ad_message">위 광고 내역 항목의 상태 칸이 대기에서 노출로 바뀌면 광고노출이 시작됩니다.</div>
+			<div class="ad_title">가격 지불 방식</div>
+	    <div>
+      	<div class="ad_choice_flex">
+      	{% for choice_field in form.choice %}
+					{{choice_field}}
+			  {% endfor %}
+      	</div>
+		    {% for error in form.choice.errors %}		
+		      <div class="helper-text red-text">{{ error }}</div>
+		    {% endfor %}
+	    </div>
+	    <div class="ad_message">무료 10개의 포스팅을 선택한 분들은 자신이 광고하는 업종과 맞는 주제의 포스팅을 해주시길 바랍니다.</div>
+			<button class="btn red lighten-1 left ad_btn" type="submit" name="action">save</button>
+		</form>
+	</div>
+{% endblock %}
+{% block javascript %}
+<script>
+  $(document).ready(function(){
+    $('.datepicker').datepicker({format: 'yyyy-mm-dd'});
+		$('.datepicker').focus(function(e) {
+  	  $(this).blur();
+		});
+  });
+</script>
+{% endblock %}

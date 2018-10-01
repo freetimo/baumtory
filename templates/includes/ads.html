@@ -1,0 +1,40 @@
+{% load static %}
+{% if ad %}
+<div>
+	<div>
+		<a target="_blank" rel="noopener noreferrer" href="//{{ ad.web }}"><img src="{{ ad.image.url }}" class="thumbnail_image"></a>
+	</div>
+	<div>
+		<a target="_blank" rel="noopener noreferrer" href="//{{ ad.web }}" class="black-text">
+			<div>
+				<div class="ad_txt">
+					AD
+				</div>
+				<span class="ad_description">
+					{{ ad.title }}
+				</span>
+			</div>
+		</a>
+	</div>
+</div>
+{% else %}
+<div>
+	<div>
+		<a target="_blank" rel="noopener noreferrer" href="{% if user.is_authenticated %}{% url 'ad' request.user.profile.pk request.user.profile.slug %}{% else %}{% url 'login' %}{% endif %}" class="black-text">
+			<img src="{% static 'img/ad.jpg' %}" class="thumbnail_image">
+		</a>
+	</div>
+	<div>
+		<a target="_blank" rel="noopener noreferrer" href="{% if user.is_authenticated %}{% url 'ad' request.user.profile.pk request.user.profile.slug %}{% else %}{% url 'login' %}{% endif %}" class="black-text">
+			<div>
+				<div class="ad_txt">
+					AD
+				</div>
+				<span class="ad_description">
+					당신의 비지니스를 응원합니다. 무료로 광고를 노출할 수 있습니다.
+				</span>
+			</div>
+		</a>
+	</div>
+</div>
+{% endif %}

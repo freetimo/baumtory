@@ -4,6 +4,7 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from posts import views
 from accounts import views as accounts_views
+from ads import views as ad_views
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -35,6 +36,7 @@ urlpatterns = [
     path('comment/dislike/', views.comment_dislike, name='comment_dislike'),
     path('comment/new/', views.comment_new, name='comment_new'),
     path('comment/delete/', views.comment_delete, name='comment_delete'),
+    path('advertisement/<int:pk>/<str:slug>/', ad_views.ad, name="ad"),
     path('diary/<int:pk>/<str:slug>/', views.diary, name='diary'),
     path('followers/diary/<int:pk>/<str:slug>/', accounts_views.followers, name='followers'),
     path('following/diary/<int:pk>/<str:slug>/', accounts_views.following, name='following'),

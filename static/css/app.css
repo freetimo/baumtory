@@ -751,7 +751,104 @@ body.progress {
 	margin-bottom: 1rem;
 	width: 100%;
 }
-
+/*ad*/
+.ad_txt{
+	color: white;
+	background-color: #f9a825;
+	border-radius: 3px 3px;
+	text-align: center;
+	display: inline-block;
+	font-size: 1.3rem;
+	padding: 1px 3px;
+	margin-right: 3px;
+}
+.ad_description{
+	font-size: 1.4rem;
+	color: rgb(80, 80, 80);
+}
+.ad_article{ 
+	width: 90%;
+	max-width: 90rem;
+	margin: 6rem auto 15rem;
+}
+.ad_title{
+	font-size: 2rem;
+	font-weight: 600;
+	color: rgb(100, 100, 100);
+	margin-top: 3rem;
+	margin-bottom: 1rem;
+}
+.ad_thumbnail_form{
+	width: 100%;
+	margin-bottom: 0;
+}
+th,
+td{
+	font-size: 1.5rem;
+	padding: 15px 3px;
+}
+.ad_on_text,
+.ad_message,
+.ad_choice_flex>label{
+	font-size: 1.4rem;
+	color: rgb(100, 100, 100);
+}
+.date_range{
+	display: flex;
+}
+.date_form_start,
+.date_form_end{
+	width: 100%;
+}
+.date_form_start{
+	margin-right: 10rem;
+}
+.datepicker{
+	cursor: pointer;
+}
+.datepicker-date-display{
+	background-color: #ef5350;
+}
+.select-wrapper input.select-dropdown{
+	font-size: 14px;
+}
+.dropdown-content li>a,
+.dropdown-content li>span{
+  color: #ef5350;
+}
+.datepicker-table{
+	font-size: 13px;
+}
+.month-prev:focus,
+.month-next:focus,
+.datepicker-table td.is-selected{
+	background-color: #ef5350;
+}
+.datepicker-day-button:active{
+	background-color: rgba(239, 83, 80, 0.2);
+}
+.datepicker-table td.is-today,
+.datepicker-cancel, 
+.datepicker-clear, 
+.datepicker-today, 
+.datepicker-done{
+	color: #ef5350;
+}
+.datepicker-table td.is-selected{
+	color: #fff;
+}
+.ad_choice_flex{
+	display: flex;
+	justify-content: space-between;
+}
+.ad_choice_flex>label>[type="radio"]:not(:checked), 
+[type="radio"]:checked{
+	opacity: 1;
+	position: static;
+}
+.ad_btn{
+	margin-top: 2rem;
+}
 @media (max-width: 600px){
 	.nav-wrapper{
 		width: 95%;
@@ -790,8 +887,12 @@ body.progress {
 	}
 	.follow_article,
 	.bookmark_article,
-	.detail_footer_divider{
+	.detail_footer_divider,
+	.ad_article{
 		width: 95%;
+	}
+	.ad_article{
+		margin-bottom: 10rem;
 	}
 	.follow_bookmark_nav{
 		margin-bottom: 1rem;
@@ -928,7 +1029,9 @@ body.progress {
 	.detail_thumbdown_icon,
 	.bookmark_button_icon,
 	.bookmark_button,
-	.detail_comment_reaction_content{
+	.detail_comment_reaction_content,
+	th,
+	td{
 		font-size: 1.4rem;
 	}
 	.article_title,
@@ -991,6 +1094,10 @@ body.progress {
 	}
 	.search_no_content{
 		margin: 7rem 2rem;
+	}
+	.date_range,
+	.ad_choice_flex{
+		flex-direction: column;
 	}
 }
 @media (max-width: 300px){

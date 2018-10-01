@@ -11,9 +11,11 @@ from django.contrib.auth import get_user_model
 from django.http import JsonResponse, Http404, HttpResponse
 from django.conf import settings
 from django.db.models import Q
+from datetime import datetime
 from posts.models import Post, Comment, Bookmark
 from posts.forms import PostForm, CommentForm, PostEditForm, PostThumbnailForm
 from accounts.models import Club
+from ads.models import Ad
 from imagekit import ImageSpec
 from imagekit.processors import ResizeToFill
 try:
@@ -116,7 +118,7 @@ def diary(request, pk, slug):
 	return render(request, 'diary.html', {'posts': posts, 'user':user})
 
 def post_detail(request, pk, slug):
-	post = get_object_or_404(Post.objects.select_related('user__profile', ).prefetch_related('likes', 'dislikes'), pk=pk, slug=slug)
+	post = get_object_or_404(Post.objects.select_related('user__profile', ).prefetch_related('likes', 'dislikes', 'tag_set'), pk=pk, slug=slug)
 	user = post.user
 	club = Club.objects.values('slug').get(title=post.choice)
 	lt_posts = Post.objects.exclude(published=False).select_related('user__profile', ).filter(Q(user=user) & Q(id__lt=pk))
@@ -133,7 +135,19 @@ def post_detail(request, pk, slug):
 		comments = paginator.page(1)
 	except EmptyPage:
 		comments = paginator.page(paginator.num_pages)
+	ads = Ad.objects.filter(
+		Q(published=True) & 
+		Q(start_date__lte=datetime.now()) & 
+		Q(end_date__gte=datetime.now())
+		)
+	ad = ads.filter(exposure=False).first()
+	if ad:
+		ad.exposure = True
+		ad.save()
+	else: 
+		ads.update(exposure = False)
 	ctx = {
+		'ad': ad,
 		'commentform': commentform, 
 		'lt_posts': lt_posts, 
 		'gt_posts': gt_posts, 
