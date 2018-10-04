@@ -68,12 +68,12 @@
 	    <div class="ad_message">광고 이미지 아래에 제목이 노출됩니다.</div>
 			<div class="ad_title">클릭시 이동할 사이트 주소</div>
 		  <div>
-				{% render_field form.web placeholder="website" value="www."%}
+				{% render_field form.web placeholder="url" %}
 		    {% for error in form.web.errors %}		
 		      <span class="helper-text red-text">{{ error }}</span>
 		    {% endfor %}
 		  </div>
-	    <div class="ad_message">광고 이미지나 제목 클릭 시 작성한 주소로 넘어갑니다.</div>
+	    <div class="ad_message">http:// 혹은 https://부터 작성해주시기 바랍니다.</div>
 			<div class="ad_title">연락 가능 이메일</div>
 		  <div>
 				{% render_field form.email placeholder="email" %}
